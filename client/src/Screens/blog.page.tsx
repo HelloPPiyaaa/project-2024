@@ -16,12 +16,19 @@ import { Post } from "../types/post";
 import "../misc/blogpage.css";
 import BlogCard from "../components/blogpost.component";
 import BlogContent from "../components/blog.content.component";
+import CommentsContainer, {
+  fetchComments,
+} from "../components/comments.components";
 
 interface BlogContextType {
   blog: Partial<Post>;
   setBlog: Dispatch<SetStateAction<Partial<Post>>>;
   islikedByUser: boolean;
   setLikeByUser: React.Dispatch<React.SetStateAction<boolean>>;
+  commentWrapper: boolean;
+  setCommentWrapper: React.Dispatch<React.SetStateAction<boolean>>;
+  totalParentCommentsLoaded: number;
+  setTotalParentCommentsLoaded: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const BlogState: Partial<Post> = {
@@ -59,7 +66,7 @@ const BlogPage = () => {
   const [loading, setLoading] = useState(true);
   let { topic, content, banner, author, publishedAt } = blog;
   const [islikedByUser, setLikeByUser] = useState(false);
-  const [commentWrapper, setCommentWrapper] = useState(true);
+  const [commentWrapper, setCommentWrapper] = useState(false);
   const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
 
   const fullname = author?.fullname || "Unknown Author";
@@ -69,9 +76,15 @@ const BlogPage = () => {
   const fetchBlog = () => {
     axios
       .post(API_BASE_URL + "/create-blog/get-blog", { blog_id })
-      .then(({ data: { blog } }) => {
+      .then(async ({ data: { blog } }) => {
+        blog.comments = await fetchComments({
+          blog_id: blog._id,
+          setParentCommentCountFun: setTotalParentCommentsLoaded,
+        });
         setBlog(blog);
-        console.log(blog.content);
+        
+        console.log("after", blog);
+
         axios
           .post(API_BASE_URL + "/search-blogs", {
             tag: blog.tags[0],
@@ -101,6 +114,7 @@ const BlogPage = () => {
     setLoading(true);
     setLikeByUser(false);
     setCommentWrapper(false);
+    setTotalParentCommentsLoaded(0);
   };
 
   return (
@@ -109,8 +123,19 @@ const BlogPage = () => {
         <Loader />
       ) : (
         <BlogContext.Provider
-          value={{ blog, setBlog, islikedByUser, setLikeByUser }}
+          value={{
+            blog,
+            setBlog,
+            islikedByUser,
+            setLikeByUser,
+            commentWrapper,
+            setCommentWrapper,
+            totalParentCommentsLoaded,
+            setTotalParentCommentsLoaded,
+          }}
         >
+          <CommentsContainer />
+
           <div className="blogpage">
             <img src={banner} alt="banner" style={{ aspectRatio: "16/9" }} />
 

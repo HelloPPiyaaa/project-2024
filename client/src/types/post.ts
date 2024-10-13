@@ -1,5 +1,5 @@
 import { User } from "./user";
-import { Comment } from "./comment";
+import { Comment, CommentsData } from "./comment";
 import { Like } from "./like";
 import { save } from "./save"; // ตรวจสอบว่าชื่อไฟล์เป็น Save หรือ save
 
@@ -9,6 +9,7 @@ export type ContentWithImages = {
 };
 
 export interface Author {
+  _id?: string;
   fullname: string;
   profile_picture: string;
   username: string;
@@ -19,7 +20,7 @@ export type Post = {
   blog_id: string;
   user: User;
   author: Author;
-  comments: Comment[];
+  comments: CommentsData;
   content: [
     {
       blocks: [];
@@ -43,7 +44,8 @@ export type Post = {
   des: string;
   banner: string;
   activity: {
-    total_likes: number;
-    total_comments: number;
+    total_likes?: number;
+    total_comments?: number;
+    total_parent_comments?: number;
   };
 };

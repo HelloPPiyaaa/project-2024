@@ -24,6 +24,7 @@ const BlogInteraction = () => {
     setBlog,
     islikedByUser,
     setLikeByUser,
+    setCommentWrapper,
   } = blogContext;
 
   const total_likes = blogActivity?.total_likes || 0;
@@ -59,7 +60,7 @@ const BlogInteraction = () => {
           }
         )
         .then(({ data: { result } }) => {
-          setLikeByUser(Boolean(result))
+          setLikeByUser(Boolean(result));
         })
         .catch((err) => {
           console.log(err);
@@ -132,6 +133,7 @@ const BlogInteraction = () => {
           </p>
 
           <button
+            onClick={() => setCommentWrapper((preVal) => !preVal)}
             className="rounded-circle d-flex align-items-center justify-content-center "
             style={{
               width: "2.5rem",

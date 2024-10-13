@@ -13,7 +13,7 @@ import Profile from "./Screens/profile";
 import EditProfile from "./Screens/edit-profile";
 import RegisterAdmin from "./Screens/Admin/adminRegister";
 import Writepost from "./Screens/post";
-import Content from "./Screens/Content";
+// import Content from "./Screens/Content";
 import LoginAdmin from "./Screens/Admin/adminLogin";
 import AdminHome from "./Screens/Admin/adminHome";
 import Setting from "./Screens/setting1";
@@ -47,6 +47,7 @@ interface UserContextType {
   userAuth: {
     access_token: string | null;
     username?: string;
+    fullname?: string;
     profile_picture?: string;
   };
   setUserAuth: React.Dispatch<React.SetStateAction<any>>;
@@ -112,7 +113,7 @@ function App() {
             <Route path="/st" element={<Settingtest />} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/helpcentre" element={<HelpCentre />} />
-            <Route path="/content/:id" element={<Content />} />
+            {/* <Route path="/content/:id" element={<Content />} /> */}
             <Route path="/category" element={<Category />} />
             <Route path="/popular" element={<Popular />} />
             {/* <Route path="/search" element={<SearchResults />} /> */}

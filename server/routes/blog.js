@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const Blog = require("../models/blog");
 const Notifications = require("../models/notifaications");
+const Comment = require("../models/comments");
+const notifaications = require("../models/notifaications");
 
 const verifyJWT = (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -174,29 +176,102 @@ router.post("/like-blog", verifyJWT, (req, res) => {
       like.save().then((notifications) => {
         return res.status(200).json({ liked_by_user: true });
       });
-    } else{
-      Notifications.findOneAndDelete({user: user_id, blog:_id, type:"like"})
-      .then(data => {
-        return res.status(200).json({liked_by_user: false})
-      })
-      .catch(err => {
-        return res.status(500).json({error: err.message})
-      })
+    } else {
+      Notifications.findOneAndDelete({ user: user_id, blog: _id, type: "like" })
+        .then((data) => {
+          return res.status(200).json({ liked_by_user: false });
+        })
+        .catch((err) => {
+          return res.status(500).json({ error: err.message });
+        });
     }
   });
 });
 
-router.post("/isliked-by-user", verifyJWT, (req,res) => {
+router.post("/isliked-by-user", verifyJWT, (req, res) => {
   let user_id = req.user;
-  let {_id} = req.body;
+  let { _id } = req.body;
 
-  Notifications.exists({user: user_id, type: "like", blog: _id})
-  .then(result => {
-    return res.status(200).json({result})
-  })
-  .catch(err => {
-    return res.status(500).json({error: err.message})
-  })
-})
+  Notifications.exists({ user: user_id, type: "like", blog: _id })
+    .then((result) => {
+      return res.status(200).json({ result });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
+
+router.post("/add-comment", verifyJWT, (req, res) => {
+  let user_id = req.user;
+  let { _id, comment, blog_author } = req.body;
+
+  if (!comment.length) {
+    return res
+      .status(403)
+      .json({ error: "เขียนอะไรบางอย่างเพื่อแสดงความคิดเห็น" });
+  }
+  let commentObj = new Comment({
+    blog_id: _id,
+    blog_author,
+    comment,
+    commented_by: user_id,
+  });
+
+  commentObj.save().then((commentFile) => {
+    let { comment, commentedAt, children } = commentFile;
+
+    Blog.findOneAndUpdate(
+      { _id },
+      {
+        $push: { comments: commentFile._id },
+        $inc: { "activity.total_comments": 1 },
+        "activity.total_parent_comments": 1,
+      }
+    ).then((blog) => {
+      console.log("แสดงความคิดเห็นแล้ว");
+    });
+
+    let notifaicationObj = {
+      type: "comment",
+      blog: _id,
+      notification_for: blog_author,
+      user: user_id,
+      comment: commentFile._id,
+    };
+
+    new Notifications(notifaicationObj)
+      .save()
+      .then((notifaications) => console.log("แจ้งเตือนใหม่!"));
+
+    return res.status(200).json({
+      comment,
+      commentedAt,
+      _id: commentFile._id,
+      user_id,
+      children,
+    });
+  });
+});
+
+router.post("/get-blog-comments", (req, res) => {
+  let { blog_id, skip } = req.body;
+
+  let maxLimit = 5;
+
+  Comment.find({ blog_id, isReply: false })
+    .populate("commented_by", "username fullname profile_picture")
+    .skip(skip)
+    .limit(maxLimit)
+    .sort({
+      commentedAt: -1,
+    })
+    .then((comment) => {
+      return res.status(200).json(comment);
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 module.exports = router;

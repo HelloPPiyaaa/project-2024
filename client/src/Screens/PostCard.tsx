@@ -101,7 +101,7 @@ const PostCard = ({ feed }: { feed: Post }) => {
             <div className="icon-cm">
               <FaRegComment />
             </div>
-            <p className="commentcount">{feed.comments.length}</p>
+            {/* <p className="commentcount">{feed.comments.length}</p> */}
 
             <div className="save">
               <div className="icon-save">
