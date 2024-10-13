@@ -1,20 +1,21 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import logoKKU from "../pic/logo-head.jpg";
 import "../misc/blogEdit.css";
 import defaultBanner from "../pic/blog banner.png";
 import { uploadImage } from "../common/b2";
 import { useContext, useEffect, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
-
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import { tools } from "../components/tools.component";
 import { UserContext } from "../App";
 import AnimationWrapper from "../Screens/page-animation";
 import { EditorContext } from "../Screens/editor-page";
+import axios from "axios";
 
 const BlogEditor = () => {
   const API_URL = "http://localhost:3001";
   const editorContext = useContext(EditorContext);
+  let { blog_id } = useParams();
 
   const {
     userAuth: { access_token },
@@ -25,7 +26,8 @@ const BlogEditor = () => {
   if (!editorContext) {
     throw new Error("EditorContext must be used within an EditorProvider");
   }
-  let {
+
+  const {
     blog,
     blog: { topic, banner, content, tags, des },
     setBlog,
@@ -39,7 +41,7 @@ const BlogEditor = () => {
       setTextEditor(
         new EditorJS({
           holder: "textEditor",
-          data: content,
+          data: Array.isArray(content) ? content[0] : content,
           tools: tools,
           placeholder: "มาเขียนเรื่องราวสุดเจ๋งกันเถอะ!",
         })
@@ -170,33 +172,26 @@ const BlogEditor = () => {
           draft: true,
         };
 
-        try {
-          const response = await fetch(API_URL + "/create-blog", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${access_token}`,
-            },
-            body: JSON.stringify(blogObj),
+        axios
+          .post(
+            API_URL + "/create-blog",
+            { ...blogObj, id: blog_id },
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          )
+          .then(() => {
+            (e.target as HTMLButtonElement).classList.remove("disable");
+
+            toast.dismiss(loadingToast);
+            toast.success("บันทึกแล้ว");
+
+            setTimeout(() => {
+              navigate("/");
+            }, 500);
           });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error);
-          }
-
-          target.classList.remove("disable");
-          toast.dismiss(loadingToast);
-          toast.success("บันทึกแล้ว👌");
-
-          setTimeout(() => {
-            navigate("/");
-          }, 500);
-        } catch (error: any) {
-          target.classList.remove("disable");
-          toast.dismiss(loadingToast);
-          toast.error(error.message);
-        }
       });
     }
   };

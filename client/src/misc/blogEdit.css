@@ -133,6 +133,15 @@ img {
   max-width: min-content;
 }
 
+.liked{
+  color: red;
+  background-color: rgba(255, 0, 0, 0.166);
+}
+
+.not-liked{
+  background-color: #f0f0f0;
+}
+
 @media (min-width: 1024px) {
   .blog-index {
     font-size: 3rem;

@@ -20,6 +20,8 @@ import BlogContent from "../components/blog.content.component";
 interface BlogContextType {
   blog: Partial<Post>;
   setBlog: Dispatch<SetStateAction<Partial<Post>>>;
+  islikedByUser: boolean;
+  setLikeByUser: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const BlogState: Partial<Post> = {
@@ -56,6 +58,9 @@ const BlogPage = () => {
   const [similarBlogs, setSimilarBlogs] = useState<Post[] | null>(null);
   const [loading, setLoading] = useState(true);
   let { topic, content, banner, author, publishedAt } = blog;
+  const [islikedByUser, setLikeByUser] = useState(false);
+  const [commentWrapper, setCommentWrapper] = useState(true);
+  const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
 
   const fullname = author?.fullname || "Unknown Author";
   const author_username = author?.username || "Unknown Username";
@@ -94,6 +99,8 @@ const BlogPage = () => {
     setBlog(BlogState);
     setSimilarBlogs(null);
     setLoading(true);
+    setLikeByUser(false);
+    setCommentWrapper(false);
   };
 
   return (
@@ -101,7 +108,9 @@ const BlogPage = () => {
       {loading ? (
         <Loader />
       ) : (
-        <BlogContext.Provider value={{ blog, setBlog }}>
+        <BlogContext.Provider
+          value={{ blog, setBlog, islikedByUser, setLikeByUser }}
+        >
           <div className="blogpage">
             <img src={banner} alt="banner" style={{ aspectRatio: "16/9" }} />
 

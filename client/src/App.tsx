@@ -82,6 +82,8 @@ function App() {
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <ChatContextProvider>
         <Routes>
+          <Route path="/editor" element={<Editor />} />
+          <Route path="/editor/:blog_id" element={<Editor />} />
           <Route element={<NavbarLayout />}>
             <Route
               path="/signin"
@@ -115,7 +117,6 @@ function App() {
             <Route path="/popular" element={<Popular />} />
             {/* <Route path="/search" element={<SearchResults />} /> */}
           </Route>
-          <Route path="/editor" element={<Editor />} />
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin/register" element={<RegisterAdmin />} />
