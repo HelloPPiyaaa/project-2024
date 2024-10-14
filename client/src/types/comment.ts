@@ -11,10 +11,14 @@ export type ReplyComment = {
 export type Comment = {
   _id: string;
   author: Author;
-  content: string;
+  comment: string;
   replies: ReplyComment[];
   created_at: Date;
   commented_by: Author;
+  childrenLevel: number;
+  children: string[];
+  isReplyingLoaded?: boolean;
+  parentIndex?: number;
 };
 
 export type CommentsData = {

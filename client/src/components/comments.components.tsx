@@ -5,6 +5,9 @@ import { MdClose } from "react-icons/md";
 import CommentField from "./comment-field.component";
 import axios from "axios";
 import { API_BASE_URL } from "../api/post";
+import NoDataMessage from "./nodata.component";
+import AnimationWrapper from "../Screens/page-animation";
+import CommentCard from "./commentcard.component";
 
 // export const fetchComments = async ({
 //   skip = 0,
@@ -51,6 +54,7 @@ export const fetchComments = async ({
       { blog_id, skip }
     )
     .then(({ data }) => {
+      console.log("Fetched Comments:", data);
       data.map((comment) => {
         comment.childrenLevel = 0;
       });
@@ -77,10 +81,40 @@ const CommentsContainer = () => {
   }
 
   const {
-    blog: { topic },
+    blog,
+    blog: {
+      topic,
+      comments: { results: commentsArr } = { results: [] },
+      _id,
+      activity,
+    },
     commentWrapper,
     setCommentWrapper,
+    totalParentCommentsLoaded,
+    setTotalParentCommentsLoaded,
+    setBlog,
   } = context;
+
+  const totalParentComments = activity?.total_parent_comments ?? 0;
+
+  const loadmoreComments = async () => {
+    if (!_id) {
+      console.error("Blog ID is undefined");
+      return;
+    }
+
+    console.log("Loading more comments..."); // เพิ่มบรรทัดนี้
+    console.log("Current Loaded Parent Comments:", totalParentCommentsLoaded);
+
+    let newCommentsArr = await fetchComments({
+      skip: totalParentCommentsLoaded,
+      blog_id: _id,
+      setParentCommentCountFun: setTotalParentCommentsLoaded,
+      comment_array: commentsArr,
+    });
+    setBlog({ ...blog, comments: newCommentsArr });
+  };
+
   return (
     <div
       className={
@@ -112,6 +146,33 @@ const CommentsContainer = () => {
         style={{ width: "120%", marginLeft: "-1.5rem" }}
       />
       <CommentField action={"แสดงความคิดเห็น"} />
+
+      {commentsArr && commentsArr.length ? (
+        commentsArr.map((comment, i) => {
+          return (
+            <AnimationWrapper key={i}>
+              <CommentCard
+                index={i}
+                leftVal={comment.childrenLevel * 4}
+                commentData={comment}
+              />
+            </AnimationWrapper>
+          );
+        })
+      ) : (
+        <NoDataMessage message="ไม่มีความคิดเห็น" />
+      )}
+
+      {totalParentComments > totalParentCommentsLoaded ? (
+        <button
+          onClick={loadmoreComments}
+          className="p-2 px-3 d-flex align-items-center gap-2 btn-loadmore"
+        >
+          โหลดเพิ่มเติม
+        </button>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

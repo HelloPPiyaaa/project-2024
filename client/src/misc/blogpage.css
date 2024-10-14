@@ -66,6 +66,23 @@
   color: #494949;
 }
 
+.btn-loadmore {
+  font-size: #494949;
+  border-radius: 0.375rem;
+}
+
+.btn-loadmore:hover {
+  background-color: rgba(128, 128, 128, 0.473);
+}
+
+.text-hide {
+  color: darkgray;
+}
+
+.text-hide:hover{
+  background-color: rgba(128, 128, 128, 0.078);
+}
+
 @media (max-width: 640px) {
   .detail-user {
     display: flex;

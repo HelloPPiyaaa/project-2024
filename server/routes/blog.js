@@ -203,41 +203,59 @@ router.post("/isliked-by-user", verifyJWT, (req, res) => {
 
 router.post("/add-comment", verifyJWT, (req, res) => {
   let user_id = req.user;
-  let { _id, comment, blog_author } = req.body;
+  let { _id, comment, blog_author, replying_to } = req.body;
 
   if (!comment.length) {
     return res
       .status(403)
       .json({ error: "เขียนอะไรบางอย่างเพื่อแสดงความคิดเห็น" });
   }
-  let commentObj = new Comment({
+  let commentObj = {
     blog_id: _id,
     blog_author,
     comment,
     commented_by: user_id,
-  });
+  };
 
-  commentObj.save().then((commentFile) => {
+  if (replying_to) {
+    commentObj.parent = replying_to;
+    commentObj.isReply = true;
+  }
+
+  new Comment(commentObj).save().then(async (commentFile) => {
     let { comment, commentedAt, children } = commentFile;
 
     Blog.findOneAndUpdate(
       { _id },
       {
         $push: { comments: commentFile._id },
-        $inc: { "activity.total_comments": 1 },
-        "activity.total_parent_comments": 1,
+        $inc: {
+          "activity.total_comments": 1,
+          "activity.total_parent_comments": replying_to ? 0 : 1,
+        },
       }
     ).then((blog) => {
       console.log("แสดงความคิดเห็นแล้ว");
     });
 
     let notifaicationObj = {
-      type: "comment",
+      type: replying_to ? "reply" : "comment",
       blog: _id,
       notification_for: blog_author,
       user: user_id,
       comment: commentFile._id,
     };
+
+    if (replying_to) {
+      notifaicationObj.replied_on_comment = replying_to;
+
+      await Comment.findOneAndUpdate(
+        { _id: replying_to },
+        { $push: { children: commentFile._id } }
+      ).then((replyingToCommentDoc) => {
+        notifaicationObj.notification_for = replyingToCommentDoc.commented_by;
+      });
+    }
 
     new Notifications(notifaicationObj)
       .save()
@@ -272,6 +290,34 @@ router.post("/get-blog-comments", (req, res) => {
       console.log(err.message);
       return res.status(500).json({ error: err.message });
     });
+});
+
+router.post("/get-replies", (req, res) => {
+  let { _id, skip } = req.body;
+
+  let maxLimit = 5;
+
+  Comment.findOne({ _id })
+    .populate({
+      path: "children",
+      option: {
+        limit: maxLimit,
+        skip: skip,
+        sort: { commentedAt: -1 },
+      },
+      populate: {
+        path: "commented_by",
+        select: "profile_picture username fulname",
+      },
+      select: "-blog_id -updatedAt",
+    })
+    .select("children")
+    .then((doc) => {
+      return res.status(200).json({ replies: doc.children });
+    })
+    .catch(err => {
+      return res.status(500).json({error:err.message})
+    })
 });
 
 module.exports = router;
