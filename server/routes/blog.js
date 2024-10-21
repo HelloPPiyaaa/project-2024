@@ -5,9 +5,10 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const Blog = require("../models/blog");
-const Notifications = require("../models/notifaications");
+const Notifications = require("../models/notifications");
 const Comment = require("../models/comments");
-const notifaications = require("../models/notifaications");
+const { ObjectId } = mongoose.Types;
+const bcrypt = require("bcrypt");
 
 const verifyJWT = (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -101,7 +102,7 @@ router.post("/", verifyJWT, (req, res) => {
         User.findOneAndUpdate(
           { _id: authorId },
           {
-            $inc: { "total_posts": incrementVal },
+            $inc: { total_posts: incrementVal },
             $push: { blogs: blog._id },
           }
         )
@@ -188,6 +189,30 @@ router.post("/like-blog", verifyJWT, (req, res) => {
   });
 });
 
+router.post("/save-blog", verifyJWT, (req, res) => {
+  let user_id = req.user;
+  let { _id, issavedByUser } = req.body;
+
+  // กำหนดค่าเพิ่มหรือลดจำนวน saves
+  let incrementVal = !issavedByUser ? 1 : -1;
+
+  Blog.findOneAndUpdate(
+    { _id },
+    { $inc: { "activity.total_saves": incrementVal } },
+    { new: true }
+  )
+    .then((blog) => {
+      if (!blog) {
+        return res.status(404).json({ error: "Blog not found" });
+      }
+
+      return res.status(200).json({ saved_by_user: !issavedByUser });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: "Failed to update blog" });
+    });
+});
+
 router.post("/isliked-by-user", verifyJWT, (req, res) => {
   let user_id = req.user;
   let { _id } = req.body;
@@ -203,7 +228,7 @@ router.post("/isliked-by-user", verifyJWT, (req, res) => {
 
 router.post("/add-comment", verifyJWT, (req, res) => {
   let user_id = req.user;
-  let { _id, comment, blog_author, replying_to } = req.body;
+  let { _id, comment, blog_author, replying_to, notification_id } = req.body;
 
   if (!comment.length) {
     return res
@@ -238,7 +263,7 @@ router.post("/add-comment", verifyJWT, (req, res) => {
       console.log("แสดงความคิดเห็นแล้ว");
     });
 
-    let notifaicationObj = {
+    let notificationObj = {
       type: replying_to ? "reply" : "comment",
       blog: _id,
       notification_for: blog_author,
@@ -247,19 +272,26 @@ router.post("/add-comment", verifyJWT, (req, res) => {
     };
 
     if (replying_to) {
-      notifaicationObj.replied_on_comment = replying_to;
+      notificationObj.replied_on_comment = replying_to;
 
       await Comment.findOneAndUpdate(
         { _id: replying_to },
         { $push: { children: commentFile._id } }
       ).then((replyingToCommentDoc) => {
-        notifaicationObj.notification_for = replyingToCommentDoc.commented_by;
+        notificationObj.notification_for = replyingToCommentDoc.commented_by;
       });
+
+      if (notification_id) {
+        Notifications.findOneAndUpdate(
+          { _id: notification_id },
+          { reply: commentFile._id }
+        ).then((notification) => console.log("การแจ้งเตือนอัพเดต"));
+      }
     }
 
-    new Notifications(notifaicationObj)
+    new Notifications(notificationObj)
       .save()
-      .then((notifaications) => console.log("แจ้งเตือนใหม่!"));
+      .then((notifications) => console.log("แจ้งเตือนใหม่!"));
 
     return res.status(200).json({
       comment,
@@ -300,7 +332,7 @@ router.post("/get-replies", (req, res) => {
   Comment.findOne({ _id })
     .populate({
       path: "children",
-      option: {
+      options: {
         limit: maxLimit,
         skip: skip,
         sort: { commentedAt: -1 },
@@ -313,11 +345,134 @@ router.post("/get-replies", (req, res) => {
     })
     .select("children")
     .then((doc) => {
+      console.log(doc);
       return res.status(200).json({ replies: doc.children });
     })
-    .catch(err => {
-      return res.status(500).json({error:err.message})
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
+
+const deleteComments = (_id) => {
+  Comment.findOneAndDelete({ _id })
+    .then((comment) => {
+      if (comment.parent) {
+        Comment.findOneAndUpdate(
+          { _id: comment.parent },
+          { $pull: { children: _id } }
+        )
+          .then((data) => console.log("comment delete from parent"))
+          .catch((err) => console.log(err));
+      }
+      Notifications.findOneAndDelete({ comment: _id }).then((notification) =>
+        console.log("comment notification deleted")
+      );
+
+      Notifications.findOneAndUpdate(
+        { reply: _id },
+        { $unset: { reply: 1 } }
+      ).then((notifications) => console.log("reply notification deleted"));
+
+      Blog.findOneAndUpdate(
+        { _id: comment.blog_id },
+        {
+          $pull: { comments: _id },
+          $inc: { "activity.total_comments": -1 },
+          "activity.total_parent_comments": comment.parent ? 0 : -1,
+        }
+      ).then((blog) => {
+        if (comment.children.length) {
+          comment.children.map((replies) => {
+            deleteComments(replies);
+          });
+        }
+      });
     })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+router.post("/delete-comment", verifyJWT, (req, res) => {
+  let user_id = req.user;
+
+  let { _id } = req.body;
+
+  Comment.findOne({ _id }).then((comment) => {
+    if (
+      comment.commented_by.equals(user_id) ||
+      comment.blog_author.equals(user_id)
+    ) {
+      deleteComments(_id);
+
+      return res.status(200).json({ status: "done" });
+    } else {
+      return res.status(403).json({ error: "คุณไม่สามารถลบความคิดเห็นได้" });
+    }
+  });
+});
+
+let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+router.post("/change-password", verifyJWT, (req, res) => {
+  let { currentPassword, newPassword, ChecknewPassword } = req.body;
+
+  if (
+    !passwordRegex.test(currentPassword) ||
+    !passwordRegex.test(newPassword) ||
+    !passwordRegex.test(ChecknewPassword)
+  ) {
+    return res.status(403).json({
+      error:
+        "รหัสผ่านควรมีความยาว 6-20 ตัวอักษร พร้อมตัวเลข ตัวพิมพ์เล็ก 1 ตัว ตัวพิมพ์ใหญ่ 1 ตัว",
+    });
+  }
+
+  if (newPassword !== ChecknewPassword) {
+    return res.status(403).json({ error: "รหัสผ่านใหม่ไม่ตรงกัน" });
+  }
+  User.findOne({ _id: req.user })
+    .then((user) => {
+      if (user.google_auth) {
+        return res.status(403).json({
+          error:
+            "คุณไม่สามารถเปลี่ยนรหัสผ่านของบัญชีนี้ได้เพราะคุณเข้าสู่ระบบผ่าน Google",
+        });
+      }
+
+      bcrypt.compare(currentPassword, user.password, (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            error:
+              "เกิดข้อผิดพลาดบางอย่างขณะบันทึกรหัสผ่านใหม่ โปรดลองอีกครั้งภายหลัง",
+          });
+        }
+
+        if (!result) {
+          return res.status(403).json({ error: "รหัสผ่านปัจจุบันไม่ถูกต้อง" });
+        }
+
+        bcrypt.hash(newPassword, 10, (err, hashed_password) => {
+          User.findOneAndUpdate(
+            { _id: req.user },
+            { password: hashed_password }
+          )
+            .then((u) => {
+              return res.status(200).json({ status: "เปลี่ยนรหัสผ่านแล้ว" });
+            })
+            .catch((err) => {
+              return res.status(500).json({
+                error:
+                  "เกิดข้อผิดพลาดบางอย่างขณะบันทึกรหัสผ่านใหม่ โปรดลองอีกครั้งภายหลัง",
+              });
+            });
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "หาผู้ใช้ไม่พบ" });
+    });
 });
 
 module.exports = router;

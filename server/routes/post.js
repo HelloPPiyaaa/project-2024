@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require("../models/user");
 const Post = require("../models/blog");
 const Comment = require("../models/comment");
-const Like = require("../models/like");
 const Notification = require("../models/notification");
 const SavedPost = require("../models/save");
 const auth = require("./authMiddleware");

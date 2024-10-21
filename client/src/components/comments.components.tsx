@@ -103,9 +103,6 @@ const CommentsContainer = () => {
       return;
     }
 
-    console.log("Loading more comments..."); // เพิ่มบรรทัดนี้
-    console.log("Current Loaded Parent Comments:", totalParentCommentsLoaded);
-
     let newCommentsArr = await fetchComments({
       skip: totalParentCommentsLoaded,
       blog_id: _id,

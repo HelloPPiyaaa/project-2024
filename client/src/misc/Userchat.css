@@ -140,9 +140,18 @@
 }
 
 .notifications-icon {
-  color: white;
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  background-color: #f0f0f0;
   position: relative;
+}
+
+.notifications-icon > svg{
+  font-size: 1.5rem;
 }
 
 .notifications-box {

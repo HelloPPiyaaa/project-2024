@@ -33,15 +33,15 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:userId", async (req, res) => {
-  const userId = req.params.userId;
+router.get("/:access_token", async (req, res) => {
+  const access_token = req.params.access_token;
 
   try {
     const chats = await chatModel.find({
-      members: { $in: [userId] },
+      members: { $in: [access_token] },
       $or: [
         { deletedBy: { $exists: false } }, // ตรวจสอบว่า deletedBy ไม่มีการตั้งค่า
-        { [`deletedBy.${userId}`]: { $exists: false } }, // ตรวจสอบว่า deletedBy สำหรับผู้ใช้ไม่มีการตั้งค่า
+        { [`deletedBy.${access_token}`]: { $exists: false } }, // ตรวจสอบว่า deletedBy สำหรับผู้ใช้ไม่มีการตั้งค่า
       ],
     });
     res.status(200).json(chats);
@@ -67,9 +67,9 @@ router.get("/find/:firstId/:secondId", async (req, res) => {
 });
 
 router.post("/delete", async (req, res) => {
-  const { chatId, userId } = req.body;
+  const { chatId, access_token } = req.body;
 
-  if (!chatId || !userId) {
+  if (!chatId || !access_token) {
     return res
       .status(400)
       .json({ message: "Chat ID and User ID are required" });
@@ -79,7 +79,7 @@ router.post("/delete", async (req, res) => {
     // อัพเดตแชทเพื่อทำเครื่องหมายว่าถูกลบโดยผู้ใช้
     const result = await chatModel.updateOne(
       { _id: chatId },
-      { $set: { [`deletedBy.${userId}`]: true } }
+      { $set: { [`deletedBy.${access_token}`]: true } }
     );
 
     if (result.nModified === 0) {

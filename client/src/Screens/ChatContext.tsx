@@ -13,7 +13,7 @@ import ChatBox from "../Navbar/chat/ChatBox";
 
 interface User {
   _id: string;
-  firstname: string;
+  fullname: string;
   profile_picture?: string;
 }
 

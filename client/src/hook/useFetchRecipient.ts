@@ -8,22 +8,27 @@ interface Chat {
 
 interface User {
   _id: string;
-  firstname: string;
+  fullname: string;
   profile_picture: string;
 }
 
-export const useFetchRecipientUser = (chat: Chat | null, userId: string | null) => {
+export const useFetchRecipientUser = (
+  chat: Chat | null,
+  access_token: string | null
+) => {
   const [recipientUser, setRecipientUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const recipientId = chat?.members.find((id) => id !== userId);
+  const recipientId = chat?.members.find((id) => id !== access_token);
 
   useEffect(() => {
     const getUser = async () => {
       if (!recipientId) return;
 
       try {
-        const response = await getRequest(`${API_BASE_URL}/users/find/${recipientId}`);
+        const response = await getRequest(
+          `${API_BASE_URL}/users/find/${recipientId}`
+        );
 
         if (response.error) {
           setError(response.error);
@@ -36,10 +41,10 @@ export const useFetchRecipientUser = (chat: Chat | null, userId: string | null) 
       }
     };
 
-    if (chat && userId) {
+    if (chat && access_token) {
       getUser();
     }
-  }, [chat, recipientId, userId]);
+  }, [chat, recipientId, access_token]);
 
   return { recipientUser, error };
 };

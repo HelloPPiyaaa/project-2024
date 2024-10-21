@@ -34,7 +34,7 @@ const ChatBox = () => {
     if (!userId) return;
     sendTextMessage(
       textMessage,
-      { _id: userId, firstname: "" },
+      { _id: userId, fullname: "" },
       currentChat?._id ?? "",
       setTextMessage
     );
@@ -47,7 +47,7 @@ const ChatBox = () => {
   return isChatBoxOpen ? (
     <Stack gap={4} className="chat-box">
       <div className="chat-header">
-        <strong>{recipientUser?.firstname}</strong>
+        <strong>{recipientUser?.fullname}</strong>
         <span onClick={handleClose}>
           <IoCloseOutline />
         </span>

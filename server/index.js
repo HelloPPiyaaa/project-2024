@@ -109,6 +109,7 @@ const formDatatoSend = (user) => {
   const access_token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
   return {
     access_token,
+    userId: user._id,
     profile_picture: user.profile_picture,
     username: user.username,
     fullname: user.fullname,
@@ -192,7 +193,11 @@ app.post("/search-blogs", (req, res) => {
 
   if (tag) {
     const lowerCaseTag = tag.toLowerCase();
-    findQuery = { tags: lowerCaseTag, draft: false, blog_id: {$ne: eliminate_blog} };
+    findQuery = {
+      tags: lowerCaseTag,
+      draft: false,
+      blog_id: { $ne: eliminate_blog },
+    };
   } else if (query) {
     findQuery = { draft: false, topic: new RegExp(query, "i") };
   } else if (author) {

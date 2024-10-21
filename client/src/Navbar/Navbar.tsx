@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./Navbar.css";
 import logoKKU from "../pic/logo-head.jpg";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,9 @@ import { LuFileEdit } from "react-icons/lu";
 import { UserContext } from "../App";
 import { IoNotificationsOutline } from "react-icons/io5";
 import UserNavigationPanel from "../components/user-navigation.component";
+import axios from "axios";
+import { API_BASE_URL } from "../api/post";
+import Notifications from "./chat/Notification";
 
 function Navbar() {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
@@ -14,8 +17,27 @@ function Navbar() {
   const navigate = useNavigate();
 
   const {
-    userAuth: { access_token, profile_picture },
+    userAuth,
+    setUserAuth,
+    userAuth: { access_token, profile_picture, new_notification_available },
   } = useContext(UserContext);
+
+  useEffect(() => {
+    if (access_token) {
+      axios
+        .get(API_BASE_URL + "/notifications/new-notification", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then(({ data }) => {
+          setUserAuth({ ...userAuth, ...data });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [access_token]);
 
   const handleNavpanel = () => {
     setUserNavPanel((currentVal) => !currentVal);
@@ -37,7 +59,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar-navbar">
+    <nav className="navbar-navbar" style={{ zIndex: "50" }}>
       <Link to="/" className="logo-link">
         <img src={logoKKU} alt="Logo" className="logo-img" />
       </Link>
@@ -72,14 +94,31 @@ function Navbar() {
 
         {access_token ? (
           <>
-            <Link to="/dashboard/notification">
+            <Link to="/dashboard/notifications">
               <button className="button-noti">
                 <IoNotificationsOutline
                   className=" d-block"
                   style={{ fontSize: "1.5rem" }}
                 />
               </button>
+              {new_notification_available ? (
+                <span
+                  className="rounded-circle position-absolute z-10"
+                  style={{
+                    backgroundColor: "red",
+                    width: "0.75rem",
+                    height: "0.75rem",
+                    zIndex: 10,
+                    top: "1rem",
+                    transform: "translateX(30px)",
+                  }}
+                ></span>
+              ) : (
+                ""
+              )}
             </Link>
+
+            <Notifications />
 
             <div
               className="relative"

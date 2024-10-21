@@ -9,6 +9,7 @@ const formDatatoSend = (user) => {
   const access_token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
   return {
     access_token,
+    userId: user._id,
     profile_picture: user.profile_picture,
     username: user.username,
     fullname: user.fullname,
@@ -128,12 +129,10 @@ router.post("/", (req, res) => {
           }
         });
       } else {
-        return res
-          .status(403)
-          .json({
-            error:
-              "บัญชีถูกสร้างด้วยบัญชี Google แล้ว โปรดเข้าสู่ระบบด้วย Google",
-          });
+        return res.status(403).json({
+          error:
+            "บัญชีถูกสร้างด้วยบัญชี Google แล้ว โปรดเข้าสู่ระบบด้วย Google",
+        });
       }
     })
     .catch((err) => {

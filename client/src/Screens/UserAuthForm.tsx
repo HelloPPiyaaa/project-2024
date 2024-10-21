@@ -43,6 +43,11 @@ const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
         return response.json();
       })
       .then((data) => {
+        if (data.userId) {
+          localStorage.setItem("userId", data.userId); // เก็บ userId ที่มาจากการตอบสนอง
+        } else {
+          console.error("User ID not found in response data:", data);
+        }
         storeInSession("user", JSON.stringify(data));
         setUserAuth(data);
       })
@@ -165,6 +170,14 @@ const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
             placeholder="Password"
             icon="VscKey"
           />
+
+          {type === "เข้าสู่ระบบ" ? (
+            <p className="text d-flex justify-content-end">
+              <Link to="/forgot-password">ลืมรหัสผ่าน</Link> ในการเข้าสู่ระบบ
+            </p>
+          ) : (
+            ""
+          )}
 
           <button
             className="btn-dark center"

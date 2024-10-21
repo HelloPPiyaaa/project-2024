@@ -46,6 +46,7 @@ export type Post = {
   activity: {
     total_likes?: number;
     total_comments?: number;
+    total_saves?: number;
     total_parent_comments?: number;
   };
 };

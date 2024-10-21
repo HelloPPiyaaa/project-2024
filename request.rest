@@ -5,24 +5,14 @@
 #     "blog_id": "Blog-ggtFn9aArjdb9drM3hJJJ2g"
 # }
 
-# POST http://localhost:3001/users/get-profile
+# POST http://localhost:3001/signin
 # Content-Type: application/json
 
 # {
-#     "username": "piyarat4543"
+#     "email": "Piyarat4543@gmail.com",
+#     "password": "Jungkook1997"
 # }
 
-POST http://localhost:3001/create-blog
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDdiODVmMTE0NGI5NDlkNmFmNjg3NyIsImlhdCI6MTcyODYzNjYxOX0.LsdkFU7XqMrcNMR1xk-LjWWKRXOUuhGIsdKjsbKxfE8
+POST http://localhost:3001/notifications/new-notification
 Content-Type: application/json
-
-{
-    "topic": "kdvdbdk",
-    "banner": "http://localhost:3001/uploads/file-1728661793587-905069819.jpg",
-    "des": "kk",
-    "content": {
-        "blocks": [1,2]
-    },
-    "tags": ["tag1","tag2"]
-
-}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDdiODVmMTE0NGI5NDlkNmFmNjg3NyIsImlhdCI6MTcyOTM2MzE4NX0.dL8JFVPV4mcfsCbQ_su77Hv0OrOYrIYNCE-Rhps76ec

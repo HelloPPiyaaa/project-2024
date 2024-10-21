@@ -98,7 +98,7 @@ const Userchat: React.FC<UserchatProps> = ({ chat, userId }) => {
         </div>
 
         <div className="text-content">
-          <div className="name">{recipientUser?.firstname}</div>
+          <div className="name">{recipientUser?.fullname}</div>
           <div className="text d-flex">
             {latestMessage?.text && (
               <span style={{ paddingRight: "10px" }}>

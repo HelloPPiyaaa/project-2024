@@ -1,6 +1,26 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 const Notification = require("../models/notification");
+const Notifications = require("../models/notifications");
+
+const verifyJWT = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (token === null) {
+    return res.status(401).json({ error: "ไม่มี token การเข้าถึง" });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: "การเข้าถึง token ไม่ถูกต้อง" });
+    }
+
+    req.user = user.id;
+    next();
+  });
+};
 
 // Fetch notifications for a user
 router.get("/", async (req, res) => {
@@ -124,6 +144,82 @@ router.post("/check", async (req, res) => {
       message: "Error checking notification: " + error.message,
     });
   }
+});
+
+router.get("/new-notification", verifyJWT, (req, res) => {
+  let user_id = req.user;
+
+  Notifications.exists({
+    notification_for: user_id,
+    seen: false,
+    user: { $ne: user_id },
+  })
+    .then((result) => {
+      if (result) {
+        return res.status(200).json({ new_notification_available: true });
+      } else {
+        return res.status(200).json({ new_notification_available: false });
+      }
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
+
+router.post("/notifications", verifyJWT, (req, res) => {
+  let user_id = req.user;
+  let { page, filter, deletedDoccount } = req.body;
+  let maxLimit = 10;
+  let findQuery = { notification_for: user_id, user: { $ne: user_id } };
+  let skipDocs = (page - 1) * maxLimit;
+  if (filter !== "all") {
+    findQuery.type = filter;
+  }
+  if (deletedDoccount) {
+    skipDocs -= deletedDoccount;
+  }
+
+  Notifications.find(findQuery)
+    .skip(skipDocs)
+    .limit(maxLimit)
+    .populate("blog", "topic blog_id")
+    .populate("user", "fullname username profile_picture")
+    .populate("comment", "comment")
+    .populate("replied_on_comment", "comment")
+    .populate("reply", "comment")
+    .sort({ createdAt: -1 })
+    .select("createdAt type seen reply")
+    .then((notifications) => {
+      
+      Notifications.updateMany(findQuery, {seen: true})
+      .skip(skipDocs)
+      .limit(maxLimit)
+      .then(() => console.log("ดูการแจ้งเตือนแล้ว"))
+
+      return res.status(200).json({ notifications });
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
+
+router.post("/all-notification-count", verifyJWT, (req, res) => {
+  let user_id = req.user;
+  let { filter } = req.body;
+  let findQuery = { notification_for: user_id, user: { $ne: user_id } };
+
+  if (filter !== "all") {
+    findQuery.type = filter;
+  }
+  Notifications.countDocuments(findQuery)
+    .then((count) => {
+      return res.status(200).json({ totalDocs: count });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
 });
 
 module.exports = router;

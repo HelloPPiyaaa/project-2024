@@ -37,7 +37,7 @@ const Notifications = () => {
 
     return {
       ...n,
-      senderName: sender?.firstname,
+      senderName: sender?.fullname,
     };
   });
 

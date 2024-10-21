@@ -27,7 +27,7 @@ const PotentialChats = () => {
             key={index}
             onClick={(event) => handleClick(event, u._id)}
           >
-            <img src={u.profile_picture} alt={u.firstname} />
+            <img src={u.profile_picture} alt={u.fullname} />
             <span
               className={
                 onlineUsers?.some((user) => user?.userId === u?._id)

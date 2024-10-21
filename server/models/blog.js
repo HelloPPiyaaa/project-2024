@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 require("./user");
 require("./comment");
-require("./like");
+// require("./like");
 require("./save");
 
 // กำหนดโครงสร้างข้อมูลสำหรับโพสต์บล็อก
@@ -15,14 +15,6 @@ const postSchema = new mongoose.Schema(
     },
     topic: {
       type: String,
-      required: true,
-    },
-    detail: {
-      type: String,
-      required: false,
-    },
-    category: {
-      type: [String],
       required: true,
     },
     banner: {
@@ -45,6 +37,10 @@ const postSchema = new mongoose.Schema(
     },
     activity: {
       total_likes: {
+        type: Number,
+        default: 0,
+      },
+      total_saves: {
         type: Number,
         default: 0,
       },
@@ -71,23 +67,12 @@ const postSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Like",
-      },
-    ],
     saves: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "SavedPost",
       },
     ],
-    views: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: {

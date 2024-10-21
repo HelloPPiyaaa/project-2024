@@ -5,12 +5,10 @@ import {
   Route,
   Outlet,
 } from "react-router-dom";
-import LoginPage from "./Screens/login";
-import RegistPage from "./Screens/register";
 import TestPage from "./Screens/test";
 import HomePage from "./Screens/home.page";
 import Profile from "./Screens/profile";
-import EditProfile from "./Screens/edit-profile";
+import EditProfile from "./Screens/edit-profile.page";
 import RegisterAdmin from "./Screens/Admin/adminRegister";
 import Writepost from "./Screens/post";
 // import Content from "./Screens/Content";
@@ -42,6 +40,9 @@ import SearchPage from "./Screens/search.page";
 import PageNotFound from "./Screens/404";
 import ProfilePage from "./Screens/ProfilePage";
 import BlogPage from "./Screens/blog.page";
+import SideNav from "./components/sideNavbar";
+import ChangPassword from "./Screens/change-password";
+import Notifications from "./Screens/notifications.page";
 
 interface UserContextType {
   userAuth: {
@@ -49,6 +50,7 @@ interface UserContextType {
     username?: string;
     fullname?: string;
     profile_picture?: string;
+    new_notification_available?: boolean;
   };
   setUserAuth: React.Dispatch<React.SetStateAction<any>>;
 }
@@ -95,6 +97,13 @@ function App() {
               element={<UserAuthForm type="สมัครสมาชิก" />}
             />
             <Route index element={<HomePage />} />
+            <Route path="dashboard" element={<SideNav />}>
+              <Route path="notifications" element={<Notifications />} />
+            </Route>
+            <Route path="settings" element={<SideNav />}>
+              <Route path="edit-profile" element={<EditProfile />}></Route>
+              <Route path="change-password" element={<ChangPassword />}></Route>
+            </Route>
             <Route path="/search/:query" element={<SearchPage />} />
             <Route path="*" element={<PageNotFound />} />
             <Route path="/user/:id" element={<ProfilePage />} />
@@ -119,7 +128,6 @@ function App() {
             {/* <Route path="/search" element={<SearchResults />} /> */}
           </Route>
 
-          <Route path="/login" element={<LoginPage />} />
           <Route path="/admin/register" element={<RegisterAdmin />} />
           <Route path="/admin/login" element={<LoginAdmin />} />
           <Route path="/admin/:id" element={<AdminHome />} />
