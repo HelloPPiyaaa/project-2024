@@ -120,7 +120,7 @@ const CommentsContainer = () => {
         " comments-component2"
       }
     >
-      <div className="position-relative">
+      <div className="position-sticky">
         <h1 className="fw-medium fs-4">Comments</h1>
         <p className="m-0 p-topicincommemt">{topic}</p>
 

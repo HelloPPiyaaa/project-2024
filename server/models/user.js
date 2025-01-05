@@ -128,6 +128,10 @@ const userSchema = new mongoose.Schema(
       ref: "posts",
       default: [],
     },
+    interests: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: {

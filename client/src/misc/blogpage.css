@@ -4,6 +4,10 @@
   margin-right: auto;
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
+  height: 100vh;
+  scrollbar-width: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .published-detail {
@@ -27,14 +31,15 @@
   transition-duration: 700ms;
   width: 30%;
   min-width: 350px;
-  height: 100%;
-  z-index: 50;
+  height: 100vh;
+  z-index: 500;
   background-color: white;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .commentWrapper {
   top: 0;
   display: block;
@@ -158,6 +163,28 @@
   text-transform: capitalize;
 }
 
+.search-mangepage {
+  margin-bottom: 40px;
+}
+
+.search-mangepage {
+  padding: 16px;
+  padding-left: 48px;
+  padding-right: 24px;
+}
+
+.search-mangepage::placeholder {
+  color: #494949;
+}
+
+.iosearch {
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a9a9a9;
+}
+
 @media (min-width: 1024px) {
   .responsive-text {
     display: inline-block;
@@ -213,6 +240,9 @@
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
   }
+  .search-mangepage {
+    margin-top: 32px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -224,6 +254,16 @@
   }
   .topic-ChangePass {
     display: none;
+  }
+  .topic-mangeBlog {
+    display: none;
+  }
+  .search-mangepage {
+    margin-top: 20px;
+  }
+  .iosearch {
+    pointer-events: none;
+    /* left: 55px; */
   }
 }
 

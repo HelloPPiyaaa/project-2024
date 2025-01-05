@@ -147,7 +147,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
   };
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3002");
+    const newSocket = io("http://localhost:3001");
     setSocket(newSocket);
 
     return () => {

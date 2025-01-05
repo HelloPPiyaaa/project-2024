@@ -43,6 +43,7 @@ import BlogPage from "./Screens/blog.page";
 import SideNav from "./components/sideNavbar";
 import ChangPassword from "./Screens/change-password";
 import Notifications from "./Screens/notifications.page";
+import ManageBlogs from "./Screens/manageblogs";
 
 interface UserContextType {
   userAuth: {
@@ -98,6 +99,7 @@ function App() {
             />
             <Route index element={<HomePage />} />
             <Route path="dashboard" element={<SideNav />}>
+              <Route path="blogs" element={<ManageBlogs />} />
               <Route path="notifications" element={<Notifications />} />
             </Route>
             <Route path="settings" element={<SideNav />}>

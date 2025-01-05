@@ -9,10 +9,16 @@
 # Content-Type: application/json
 
 # {
-#     "email": "Piyarat4543@gmail.com",
-#     "password": "Jungkook1997"
+#     "email": "piyarat4543@gmail.com",
+#     "password": "Jungkook1997*"
 # }
 
-POST http://localhost:3001/notifications/new-notification
+POST http://localhost:3001/create-blog/user-written-blog
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDdiODVmMTE0NGI5NDlkNmFmNjg3NyIsImlhdCI6MTcyOTM2MzE4NX0.dL8JFVPV4mcfsCbQ_su77Hv0OrOYrIYNCE-Rhps76ec
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDdiODVmMTE0NGI5NDlkNmFmNjg3NyIsImlhdCI6MTcyOTU2NjA2OH0.ng30QedxGKnh1FxHj8jesh3Q7OcKMFfS0MgbYFVTGEI
+
+{
+    "page": 1,
+    "draft": false
+}
+

@@ -284,7 +284,7 @@ const CommentCard = ({ index, leftVal, commentData }: CommentCardProps) => {
           index - (parentIndex ?? 0) <
           commentArr[parentIndex ?? 0].children.length
         ) {
-          return button
+          return button;
         }
       }
     }

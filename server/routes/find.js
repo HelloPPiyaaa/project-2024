@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
@@ -56,6 +57,11 @@ router.get("/", async (req, res) => {
 
 router.get("/find/:userId", async (req, res) => {
   const userId = req.params.userId;
+
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: "Invalid or missing user ID" });
+  }
+
   try {
     const user = await User.findById(userId);
     if (!user) {

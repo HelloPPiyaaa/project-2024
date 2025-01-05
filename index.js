@@ -15,7 +15,19 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
+// const io = new Server(server, {
+//   cors: {
+//     origin: ["https://www.kku-blogging.site", "https://kku-blogging.site"],
+//     credentials: true,
+//   },
+// });
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
 require("dotenv").config();
 
 const port = process.env.PORT || 3001;
@@ -24,14 +36,16 @@ console.log("JWT_SECRET:", process.env.JWT_SECRET);
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["https://www.kku-blogging.site", "https://kku-blogging.site"],
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
+
+app.use(cors("*"));
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey),
