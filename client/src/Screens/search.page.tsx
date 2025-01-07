@@ -8,7 +8,6 @@ import BlogCard from "../components/blogpost.component";
 import NoDataMessage from "../components/nodata.component";
 import LoadMoreDataBtn from "../components/load-more.component";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { filterPaginationData } from "../components/filter-pagination";
 import { User } from "../types/user";
 import UserCard from "../components/usercard.component";
@@ -27,7 +26,7 @@ const SearchPage = () => {
 
   const searchBlog = ({ page = 1, create_new_arr = false }) => {
     axios
-      .post(API_BASE_URL + "/search-blogs", { query, page })
+      .post(`${import.meta.env.VITE_DOMAIN}/search-blogs`, { query, page })
       .then(async ({ data }) => {
         console.log(data.blogs);
 
@@ -48,7 +47,7 @@ const SearchPage = () => {
 
   const fetchUsers = () => {
     axios
-      .post(API_BASE_URL + "/search-users", { query })
+      .post(`${import.meta.env.VITE_DOMAIN}/search-users`, { query })
       .then(({ data: { users } }) => {
         console.log(users);
         setUsers(users);

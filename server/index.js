@@ -15,7 +15,17 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "http://localhost:3000",
+      "https://kku-blogging-sv.onrender.com",
+      "https://willowy-sundae-e9aa9e.netlify.app",
+    ],
+    credentials: true,
+  },
+  transports: ["websocket", "polling"],
+});
 require("dotenv").config();
 
 const port = process.env.PORT || 3001;
@@ -26,7 +36,11 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://kku-blogging-sv.onrender.com",
+      "https://willowy-sundae-e9aa9e.netlify.app",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

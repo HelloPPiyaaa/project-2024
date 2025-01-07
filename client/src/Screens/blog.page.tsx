@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import { API_BASE_URL } from "../api/post";
 import React, {
   createContext,
   Dispatch,
@@ -79,7 +78,9 @@ const BlogPage = () => {
 
   const fetchBlog = () => {
     axios
-      .post(API_BASE_URL + "/create-blog/get-blog", { blog_id })
+      .post(`${import.meta.env.VITE_DOMAIN}/create-blog/get-blog`, {
+        blog_id,
+      })
       .then(async ({ data: { blog } }) => {
         blog.comments = await fetchComments({
           blog_id: blog._id,
@@ -88,7 +89,7 @@ const BlogPage = () => {
         setBlog(blog);
 
         axios
-          .post(API_BASE_URL + "/search-blogs", {
+          .post(`${import.meta.env.VITE_DOMAIN}/search-blogs`, {
             tag: blog.tags[0],
             limit: 6,
             eliminate_blog: blog_id,

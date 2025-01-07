@@ -1,11 +1,9 @@
-const API_BASE_URL = "http://localhost:3001";
-
 export const fetchProfile = async (me: string | null): Promise<any> => {
   if (!me) {
     throw new Error("Invalid user ID");
   }
 
-  const url = `${API_BASE_URL}/follow/${me}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/follow/${me}`;
   console.log("Request URL:", url);
 
   try {
@@ -53,7 +51,7 @@ export const fetchFollow = async (me: string | null): Promise<any> => {
     throw new Error("Invalid user ID");
   }
 
-  const url = `${API_BASE_URL}/follow/users/${me}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/follow/users/${me}`;
   console.log("Request URL:", url);
 
   try {

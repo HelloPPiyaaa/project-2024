@@ -8,7 +8,6 @@ import { UserContext } from "../App";
 import { IoNotificationsOutline } from "react-icons/io5";
 import UserNavigationPanel from "../components/user-navigation.component";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import Notifications from "./chat/Notification";
 
 function Navbar() {
@@ -25,7 +24,7 @@ function Navbar() {
   useEffect(() => {
     if (access_token) {
       axios
-        .get(API_BASE_URL + "/notifications/new-notification", {
+        .get(`${import.meta.env.VITE_DOMAIN}/notifications/new-notification`, {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },

@@ -3,7 +3,6 @@ import { getDay } from "../common/date";
 import { useContext, useState } from "react";
 import { UserContext } from "../App";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 
 const BlogStats = ({ stats }) => {
   return (
@@ -127,7 +126,7 @@ const deleteBlog = (blog, access_token, target) => {
 
   axios
     .post(
-      API_BASE_URL + "/create-blog/delete-blog",
+      `${import.meta.env.VITE_DOMAIN}/create-blog/delete-blog`,
       { blog_id },
       {
         headers: {

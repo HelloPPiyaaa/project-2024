@@ -5,7 +5,6 @@ import NotificationCommentField from "./notification-content-field";
 import "../misc/blogpage.css";
 import { UserContext } from "../App";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 
 interface NotificationCardProps {
   data: {
@@ -82,7 +81,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
 
     axios
       .post(
-        API_BASE_URL + "/create-blog/delete-comment",
+        `${import.meta.env.VITE_DOMAIN}/create-blog/delete-comment`,
         { _id: comment_id },
         {
           headers: {

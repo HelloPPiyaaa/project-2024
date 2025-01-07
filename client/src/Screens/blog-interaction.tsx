@@ -8,7 +8,6 @@ import { UserContext } from "../App";
 import { BlogContext } from "./blog.page";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { MdOutlineBookmark } from "react-icons/md";
 
@@ -56,7 +55,7 @@ const BlogInteraction = () => {
     if (access_token) {
       axios
         .post(
-          API_BASE_URL + "/create-blog/isliked-by-user",
+          `${import.meta.env.VITE_DOMAIN}/create-blog/isliked-by-user`,
           { _id },
           {
             headers: {
@@ -90,7 +89,7 @@ const BlogInteraction = () => {
 
       axios
         .post(
-          API_BASE_URL + "/create-blog/like-blog",
+          `${import.meta.env.VITE_DOMAIN}/create-blog/like-blog`,
           {
             _id,
             islikedByUser,
@@ -129,7 +128,7 @@ const BlogInteraction = () => {
 
       axios
         .post(
-          API_BASE_URL + "/create-blog/save-blog",
+          `${import.meta.env.VITE_DOMAIN}/create-blog/save-blog`,
           {
             _id,
             issavedByUser,

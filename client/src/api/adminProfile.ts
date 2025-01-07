@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3001";
+// const API_BASE_URL = "http://localhost:3001";
 
 export const fetchAdminProfile = async (id: string): Promise<any> => {
   if (!id) {
@@ -11,7 +11,7 @@ export const fetchAdminProfile = async (id: string): Promise<any> => {
     return null;
   }
 
-  const url = `${API_BASE_URL}/admin/${id}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/admin/${id}`;
 
   try {
     const response = await fetch(url, {
@@ -58,7 +58,7 @@ export const fetchUsersAPI = async () => {
     return;
   }
 
-  const response = await fetch("http://localhost:3001/admin/users", {
+  const response = await fetch(`${import.meta.env.VITE_DOMAIN}/admin/users`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -81,7 +81,7 @@ export const fetchAllUser = async () => {
     return;
   }
 
-  const response = await fetch("http://localhost:3001/admin/viewer", {
+  const response = await fetch(`${import.meta.env.VITE_DOMAIN}/admin/viewer`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -104,13 +104,16 @@ export const deleteUserAPI = async (userId: string): Promise<void> => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${adminToken}`, // ส่ง token ไปใน header
-      },
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_DOMAIN}/admin/users/${userId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminToken}`, // ส่ง token ไปใน header
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to delete user");

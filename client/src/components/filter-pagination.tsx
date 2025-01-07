@@ -1,5 +1,4 @@
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { Post } from "../types/post";
 
 interface FilterPaginationDataProps {
@@ -36,7 +35,7 @@ export const filterPaginationData = async ({
   } else {
     try {
       const response = await axios.post(
-        API_BASE_URL + countRoute,
+        `${import.meta.env.VITE_DOMAIN}${countRoute}`,
         data_to_send,
         headers
       );

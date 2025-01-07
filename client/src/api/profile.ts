@@ -1,11 +1,9 @@
-const API_BASE_URL = "http://localhost:3001";
-
 export const fetchUserProfile = async (id: string): Promise<any> => {
   if (!id) {
     throw new Error("Invalid user ID");
   }
 
-  const url = `${API_BASE_URL}/profile/${id}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/profile/${id}`;
   console.log("Request URL:", url);
 
   try {
@@ -50,7 +48,7 @@ export const fetchUserProfile = async (id: string): Promise<any> => {
 
 export const fetchPostsByUser = async (userId: string) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/posts?user=${userId}`);
+    const response = await fetch(`${import.meta.env.VITE_DOMAIN}/posts?user=${userId}`);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -64,7 +62,7 @@ export const fetchPostsByUser = async (userId: string) => {
 export const fetchLikedPosts = async (userId: string) => {
   try {
     const response = await fetch(
-      `http://localhost:3001/posts/likedPosts/${userId}`
+      `${import.meta.env.VITE_DOMAIN}/posts/likedPosts/${userId}`
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -82,7 +80,7 @@ export const updateUserProfile = async (
   id: string,
   userData: any
 ): Promise<any> => {
-  const url = `${API_BASE_URL}/profile/edit-profile/update/${id}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/profile/edit-profile/update/${id}`;
   console.log("Request URL:", url);
 
   try {
@@ -117,7 +115,7 @@ export const updateUserProfile = async (
 };
 
 export const fetchSavedPosts = async (userId: string) => {
-  const url = `${API_BASE_URL}/posts/saved/${userId}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/posts/saved/${userId}`;
   console.log("Request URL:", url);
 
   try {
@@ -155,7 +153,7 @@ export const deleteUserProfile = async (id: string): Promise<any> => {
     throw new Error("Invalid user ID");
   }
 
-  const url = `${API_BASE_URL}/profile/edit-profile/delete/${id}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/profile/edit-profile/delete/${id}`;
   console.log("Request URL:", url);
 
   try {
@@ -189,7 +187,7 @@ export const deleteUserProfile = async (id: string): Promise<any> => {
 };
 
 export const changePassword = async (data: any) => {
-  const url = `${API_BASE_URL}/profile/changepassword`;
+  const url = `${import.meta.env.VITE_DOMAIN}/profile/changepassword`;
   console.log("Request URL:", url);
 
   try {

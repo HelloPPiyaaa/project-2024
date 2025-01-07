@@ -4,7 +4,6 @@ import "../misc/blogpage.css";
 import { useContext, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { UserContext } from "../App";
 
 const ChangPassword = () => {
@@ -52,11 +51,15 @@ const ChangPassword = () => {
     let loadingToast = toast.loading("กำลังอัพเดต...");
 
     axios
-      .post(API_BASE_URL + "/create-blog/change-password", formData, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
+      .post(
+        `${import.meta.env.VITE_DOMAIN}/create-blog/change-password`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
       .then(() => {
         toast.dismiss(loadingToast);
         target.removeAttribute("disabled");

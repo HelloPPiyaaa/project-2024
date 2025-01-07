@@ -1,5 +1,3 @@
-const API_BASE_URL = "http://localhost:3001";
-
 // Function to fetch all questions
 export const fetchQuestionsAPI = async () => {
   const token = localStorage.getItem("userId");
@@ -8,7 +6,7 @@ export const fetchQuestionsAPI = async () => {
     return null;
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/questions`, {
+  const response = await fetch(`${import.meta.env.VITE_DOMAIN}/api/questions`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -36,7 +34,7 @@ export const addQuestionAPI = async (
     return null;
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/questions`, {
+  const response = await fetch(`${import.meta.env.VITE_DOMAIN}/api/questions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -65,14 +63,17 @@ export const updateQuestionAPI = async (
     throw new Error("No admin token found. Unauthorized request.");
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/questions/${id}`, {
-    method: "PUT", // Make sure you're using PUT for updates
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ topic, answer }), // Send the updated data
-  });
+  const response = await fetch(
+    `${import.meta.env.VITE_DOMAIN}/api/questions/${id}`,
+    {
+      method: "PUT", // Make sure you're using PUT for updates
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ topic, answer }), // Send the updated data
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to update question");
@@ -90,13 +91,16 @@ export const deleteQuestionAPI = async (id: string) => {
     return null;
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/questions/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${import.meta.env.VITE_DOMAIN}/api/questions/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to delete question");

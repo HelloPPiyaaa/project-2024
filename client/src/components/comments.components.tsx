@@ -4,7 +4,6 @@ import { BlogContext } from "../Screens/blog.page";
 import { MdClose } from "react-icons/md";
 import CommentField from "./comment-field.component";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import NoDataMessage from "./nodata.component";
 import AnimationWrapper from "../Screens/page-animation";
 import CommentCard from "./commentcard.component";
@@ -50,7 +49,7 @@ export const fetchComments = async ({
 
   await axios
     .post<{ childrenLevel?: number }[]>(
-      API_BASE_URL + "/create-blog/get-blog-comments",
+      `${import.meta.env.VITE_DOMAIN}/create-blog/get-blog-comments`,
       { blog_id, skip }
     )
     .then(({ data }) => {

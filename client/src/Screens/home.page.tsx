@@ -19,7 +19,6 @@ interface BlogState {
 }
 
 const HomePage = () => {
-  const API_URL = "http://localhost:3001";
   const [blogs, setBlogs] = useState<BlogState | null>(null);
   const [trendingBlogs, setTrendingBlogs] = useState<Post[] | null>(null);
   const [pageState, setPageState] = useState("หน้าหลัก");
@@ -49,7 +48,7 @@ const HomePage = () => {
 
   const fetchLatestBlogs = ({ page = 1 }) => {
     axios
-      .post(API_URL + "/posts/latest-blog", { page })
+      .post(`${import.meta.env.VITE_DOMAIN}/posts/latest-blog`, { page })
       .then(async ({ data }) => {
         console.log(data.blogs);
 
@@ -68,7 +67,10 @@ const HomePage = () => {
 
   const fetchBlogsByCategory = ({ page = 1 }) => {
     axios
-      .post(API_URL + "/search-blogs", { tag: pageState, page })
+      .post(`${import.meta.env.VITE_DOMAIN}/search-blogs`, {
+        tag: pageState,
+        page,
+      })
       .then(async ({ data }) => {
         let formatData = await filterPaginationData({
           state: blogs,
@@ -87,7 +89,7 @@ const HomePage = () => {
 
   const fetchTrendingBlogs = () => {
     axios
-      .get(API_URL + "/posts/trending-blogs")
+      .get(`${import.meta.env.VITE_DOMAIN}/posts/trending-blogs`)
       .then(({ data }) => {
         setTrendingBlogs(data.blogs);
       })

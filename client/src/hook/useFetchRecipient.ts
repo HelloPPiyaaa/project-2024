@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_BASE_URL, getRequest } from "../api/chat";
+import { getRequest } from "../api/chat";
 
 interface Chat {
   _id: string;
@@ -27,7 +27,7 @@ export const useFetchRecipientUser = (
 
       try {
         const response = await getRequest(
-          `${API_BASE_URL}/users/find/${recipientId}`
+          `${import.meta.env.VITE_DOMAIN}/users/find/${recipientId}`
         );
 
         if (response.error) {

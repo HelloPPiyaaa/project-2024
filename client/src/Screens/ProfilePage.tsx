@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { API_BASE_URL } from "../api/post";
 import AnimationWrapper from "./page-animation";
 import Loader from "../components/loader.component";
 import "../misc/profile.css";
@@ -74,7 +73,7 @@ const ProfilePage = () => {
 
   const fetchUserProfile = () => {
     axios
-      .post(API_BASE_URL + "/users/get-profile", {
+      .post(`${import.meta.env.VITE_DOMAIN}/users/get-profile`, {
         username: profileId,
       })
       .then(({ data: user }) => {
@@ -102,7 +101,7 @@ const ProfilePage = () => {
   }) => {
     user_id = user_id === undefined ? blogs?.user_id : user_id;
     axios
-      .post(API_BASE_URL + "/search-blogs", {
+      .post(`${import.meta.env.VITE_DOMAIN}/search-blogs`, {
         author: user_id,
         page,
       })

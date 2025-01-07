@@ -1,19 +1,21 @@
 export const uploadImage = async (img: File) => {
   let imgUrl = null;
-  const API_URL = "http://localhost:3001";
 
   const formData = new FormData();
   formData.append("file", img);
 
   try {
-    const uploadResponse = await fetch(`${API_URL}/get-upload-picture`, {
-      method: "POST",
-      body: formData,
-    });
+    const uploadResponse = await fetch(
+      `${import.meta.env.VITE_DOMAIN}/get-upload-picture`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     if (uploadResponse.ok) {
       const { filename } = await uploadResponse.json();
-      imgUrl = `${API_URL}/uploads/${filename}`;
+      imgUrl = `${import.meta.env.VITE_DOMAIN}/uploads/${filename}`;
     } else {
       throw new Error("Error uploading image");
     }

@@ -61,7 +61,6 @@ interface Report {
 
 const AdminHome: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const API_BASE_URL = "http://localhost:3001";
 
   const [adminProfile, setAdminProfile] = useState<any>(true);
 
@@ -99,7 +98,9 @@ const AdminHome: React.FC = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/report");
+        const response = await axios.get(
+          `${import.meta.env.VITE_DOMAIN}/api/report`
+        );
         console.log(response.data); // Log the data to check the structure
         setReports(response.data);
       } catch (error) {
@@ -238,7 +239,9 @@ const AdminHome: React.FC = () => {
 
   const fetchReports = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/report`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_DOMAIN}/api/report`
+      );
       setReports(response.data);
     } catch (error) {
       console.error("Error fetching reports:", error);

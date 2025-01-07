@@ -2,10 +2,8 @@ import axios, { AxiosResponse } from "axios";
 import { Post } from "../types/post";
 import Cookies from "js-cookie";
 
-const API_BASE_URL = "http://localhost:3001";
-
 const createPost = async (post: any): Promise<any> => {
-  const url = `${API_BASE_URL}/posts`;
+  const url = `${import.meta.env.VITE_DOMAIN}/posts`;
 
   try {
     const response = await fetch(url, {
@@ -39,7 +37,7 @@ const createPost = async (post: any): Promise<any> => {
 };
 
 const editPost = async (id: string, post: any): Promise<any> => {
-  const url = `${API_BASE_URL}/posts/${id}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/posts/${id}`;
 
   try {
     const response = await fetch(url, {
@@ -107,7 +105,7 @@ const addReport = async (
   reason: string,
   userId: string
 ): Promise<AxiosResponse<any>> => {
-  const url = `${API_BASE_URL}/api/report/add`; // Notice the `/api/report` here
+  const url = `${import.meta.env.VITE_DOMAIN}/api/report/add`; // Notice the `/api/report` here
 
   try {
     const response = await axios.post(url, {
@@ -129,7 +127,7 @@ const addReport = async (
 };
 
 const addComment = async (id: string, content: string): Promise<void> => {
-  const url = `${API_BASE_URL}/posts/${id}/comment`;
+  const url = `${import.meta.env.VITE_DOMAIN}/posts/${id}/comment`;
   const userId = localStorage.getItem("userId");
 
   if (!userId) {
@@ -165,7 +163,9 @@ const Replycomment = async (
     }
 
     const response = await fetch(
-      `${API_BASE_URL}/posts/${postId}/comment/${commentId}/reply`,
+      `${
+        import.meta.env.VITE_DOMAIN
+      }/posts/${postId}/comment/${commentId}/reply`,
       {
         method: "POST",
         headers: {
@@ -196,7 +196,9 @@ export const ReplyToReply = async (
   replyData: { content: string; author: string; replyTo: string }
 ) => {
   const response = await fetch(
-    `${API_BASE_URL}/posts/${postId}/comments/${commentId}/replies/${replyId}`,
+    `${
+      import.meta.env.VITE_DOMAIN
+    }/posts/${postId}/comments/${commentId}/replies/${replyId}`,
     {
       method: "POST",
       headers: {
@@ -222,7 +224,9 @@ const deleteComment = async (postId: any, commentId: any) => {
 
     //ส่งคำขอลบไป API
     const response = await fetch(
-      `${API_BASE_URL}/posts/${postId}/comment/delete/${commentId}`,
+      `${
+        import.meta.env.VITE_DOMAIN
+      }/posts/${postId}/comment/delete/${commentId}`,
       {
         method: "DELETE",
         headers: {
@@ -254,7 +258,9 @@ const deleteReply = async (postId: any, commentId: any, replyId: any) => {
     }
 
     const response = await fetch(
-      `${API_BASE_URL}/posts/${postId}/comment/${commentId}/reply/${replyId}`,
+      `${
+        import.meta.env.VITE_DOMAIN
+      }/posts/${postId}/comment/${commentId}/reply/${replyId}`,
       {
         method: "DELETE",
         headers: {
@@ -278,7 +284,7 @@ const deleteReply = async (postId: any, commentId: any, replyId: any) => {
 };
 
 const likePost = async (id: string): Promise<void> => {
-  const url = `${API_BASE_URL}/posts/${id}/likes`;
+  const url = `${import.meta.env.VITE_DOMAIN}/posts/${id}/likes`;
   const userId = localStorage.getItem("userId");
   try {
     const response = await fetch(url, {
@@ -301,7 +307,7 @@ const likePost = async (id: string): Promise<void> => {
 };
 
 const getPosts = async (): Promise<Post[]> => {
-  const url = `${API_BASE_URL}/posts`;
+  const url = `${import.meta.env.VITE_DOMAIN}/posts`;
 
   try {
     const response = await fetch(url, {
@@ -328,7 +334,7 @@ const getPosts = async (): Promise<Post[]> => {
 };
 
 const getPostById = async (id: string): Promise<Post> => {
-  const url = `${API_BASE_URL}/posts/${id}`;
+  const url = `${import.meta.env.VITE_DOMAIN}/posts/${id}`;
 
   try {
     const response = await fetch(url, {
@@ -380,7 +386,7 @@ const deletePostById = async (id: string): Promise<any> => {
       throw new Error("Token is missing");
     }
 
-    const response = await fetch(`http://localhost:3001/posts/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_DOMAIN}/posts/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -404,13 +410,16 @@ const deletePostById = async (id: string): Promise<any> => {
 
 const savePost = async (postId: string): Promise<void> => {
   const userId = localStorage.getItem("userId");
-  const response = await fetch(`${API_BASE_URL}/posts/${postId}/save`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ userId }),
-  });
+  const response = await fetch(
+    `${import.meta.env.VITE_DOMAIN}/posts/${postId}/save`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to save post");
@@ -418,7 +427,9 @@ const savePost = async (postId: string): Promise<void> => {
 };
 
 export const getSavedPosts = async (userId: string): Promise<Post[]> => {
-  const response = await fetch(`${API_BASE_URL}/posts/saved?userId=${userId}`);
+  const response = await fetch(
+    `${import.meta.env.VITE_DOMAIN}/posts/saved?userId=${userId}`
+  );
   if (!response.ok) {
     throw new Error("Failed to fetch saved posts");
   }
@@ -429,13 +440,16 @@ const deleteSave = async (postId: string) => {
   const userId = localStorage.getItem("userId");
 
   try {
-    const response = await fetch(`${API_BASE_URL}/posts/${postId}/save`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_DOMAIN}/posts/${postId}/save`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -457,7 +471,6 @@ export {
   deletePostById,
   savePost,
   deleteSave,
-  API_BASE_URL,
   deleteComment,
   Replycomment,
   deleteReply,

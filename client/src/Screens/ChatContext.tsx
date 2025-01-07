@@ -7,7 +7,7 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-import { getRequest, API_BASE_URL, postRequest } from "../api/chat";
+import { getRequest, postRequest } from "../api/chat";
 import { io, Socket } from "socket.io-client";
 import ChatBox from "../Navbar/chat/ChatBox";
 
@@ -147,7 +147,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
   };
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3001");
+    const newSocket = io(`${import.meta.env.VITE_DOMAIN}`);
     setSocket(newSocket);
 
     return () => {
@@ -216,7 +216,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
 
   useEffect(() => {
     const getUsers = async () => {
-      const response = await getRequest(`${API_BASE_URL}/users`);
+      const response = await getRequest(`${import.meta.env.VITE_DOMAIN}/users`);
 
       if (response.error) {
         return console.log("Error fetching users", response);
@@ -247,7 +247,9 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
       setUserChatsError(null);
 
       try {
-        const response = await getRequest(`${API_BASE_URL}/chats/${userId}`);
+        const response = await getRequest(
+          `${import.meta.env.VITE_DOMAIN}/chats/${userId}`
+        );
         setUserChatsLoading(false);
 
         if (response.error) {
@@ -290,7 +292,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
 
       try {
         const response = await getRequest(
-          `${API_BASE_URL}/messages/${currentChat._id}`
+          `${import.meta.env.VITE_DOMAIN}/messages/${currentChat._id}`
         );
         setIsMessageLoading(false);
 
@@ -323,7 +325,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
       if (!textMessage) return console.log("คุณต้องพิมพ์อะไรบางอย่าง...");
 
       const response = await postRequest(
-        `${API_BASE_URL}/messages`,
+        `${import.meta.env.VITE_DOMAIN}/messages`,
         JSON.stringify({
           chatId: currentChatId,
           senderId: sender._id,
@@ -358,7 +360,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
 
     console.log("Creating chat between:", firstId, secondId);
     const response = await postRequest(
-      `${API_BASE_URL}/chats`,
+      `${import.meta.env.VITE_DOMAIN}/chats`,
       JSON.stringify({ firstId, secondId })
     );
 
@@ -433,13 +435,16 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
   const deleteChat = useCallback(async (chatId: string, userId: string) => {
     try {
       // ส่งคำขอไปที่ API เพื่อทำเครื่องหมายว่าแชทถูกลบ
-      const response = await fetch(`${API_BASE_URL}/chats/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ chatId, userId }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_DOMAIN}/chats/delete`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ chatId, userId }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete chat");
@@ -475,7 +480,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({
       });
 
       // ส่งคำขอไปที่ API เพื่อทำเครื่องหมายว่าข้อความในแชทถูกลบ
-      await fetch(`${API_BASE_URL}/messages/delete`, {
+      await fetch(`${import.meta.env.VITE_DOMAIN}/messages/delete`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

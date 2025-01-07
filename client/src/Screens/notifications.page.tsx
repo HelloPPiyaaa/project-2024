@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { filterPaginationData } from "../components/filter-pagination";
 import Loader from "../components/loader.component";
 import AnimationWrapper from "./page-animation";
@@ -38,7 +37,7 @@ const Notification = () => {
   }) => {
     axios
       .post(
-        API_BASE_URL + "/notifications/notifications",
+        `${import.meta.env.VITE_DOMAIN}/notifications/notifications`,
         { page, filter, deletedDoccount },
         {
           headers: {

@@ -1,10 +1,8 @@
-const API_BASE_URL = "http://localhost:3001";
-
 export const loginUser = async (
   email: string,
   password: string
 ): Promise<any> => {
-  const url = `${API_BASE_URL}/login`;
+  const url = `${import.meta.env.VITE_DOMAIN}/login`;
   console.log("Request URL:", url);
 
   try {

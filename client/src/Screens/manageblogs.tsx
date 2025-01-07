@@ -7,7 +7,6 @@ import {
 } from "react";
 import { UserContext } from "../App";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { filterPaginationData } from "../components/filter-pagination";
 import { Toaster } from "react-hot-toast";
 import { IoIosSearch } from "react-icons/io";
@@ -54,7 +53,7 @@ const ManageBlogs = () => {
   const getBlogs = ({ page, draft, deleteDocCount = 0 }: GetBlogsParams) => {
     axios
       .post(
-        API_BASE_URL + "/create-blog/user-written-blog",
+        `${import.meta.env.VITE_DOMAIN}/create-blog/user-written-blog`,
         {
           page,
           draft,
@@ -139,7 +138,10 @@ const ManageBlogs = () => {
         <IoIosSearch className="position-absolute iosearch" />
       </div>
 
-      <InpageNavigation routes={["บล็อกที่เผยแพร่แล้ว", "บล็อกที่จัดเก็บ"]} defaultActiveIndex={ activeTab !== 'draft' ? 0 : 1}>
+      <InpageNavigation
+        routes={["บล็อกที่เผยแพร่แล้ว", "บล็อกที่จัดเก็บ"]}
+        defaultActiveIndex={activeTab !== "draft" ? 0 : 1}
+      >
         {blogs === null ? (
           <Loader />
         ) : blogs.result.length ? (

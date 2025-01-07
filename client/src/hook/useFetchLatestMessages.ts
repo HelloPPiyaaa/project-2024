@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../Screens/ChatContext";
-import { API_BASE_URL, getRequest } from "../api/chat";
+import { getRequest } from "../api/chat";
 
 interface Message {
   chatId: string;
@@ -18,7 +18,7 @@ export const useFetchLatestMessages = (chat: { _id: string }) => {
     const getMessages = async () => {
       try {
         const response = await getRequest(
-          `${API_BASE_URL}/messages/${chat._id}`
+          `${import.meta.env.VITE_DOMAIN}/messages/${chat._id}`
         );
         if (response.error) {
           console.error("Error getting message...", response.error);

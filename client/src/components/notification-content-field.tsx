@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { UserContext } from "../App";
-import { API_BASE_URL } from "../api/post";
 import axios from "axios";
 
 const NotificationCommentField = ({
@@ -39,7 +38,7 @@ const NotificationCommentField = ({
 
     axios
       .post(
-        API_BASE_URL + "/create-blog/add-comment",
+        `${import.meta.env.VITE_DOMAIN}/create-blog/add-comment`,
         {
           _id,
           blog_author: user_id,

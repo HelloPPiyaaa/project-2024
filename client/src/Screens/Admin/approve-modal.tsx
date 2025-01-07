@@ -46,13 +46,12 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   refreshReports,
 }) => {
   const navigate = useNavigate();
-  const API_BASE_URL = "http://localhost:3001";
 
   const verifyReport = async (
     reportId: string,
     isVerified: boolean
   ): Promise<AxiosResponse<any>> => {
-    const url = `${API_BASE_URL}/api/report/${reportId}/verify`;
+    const url = `${import.meta.env.VITE_DOMAIN}/api/report/${reportId}/verify`;
 
     try {
       const response = await axios.patch(url, {
@@ -74,7 +73,9 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
     reportId: string,
     postId: string
   ): Promise<any> => {
-    const url = `${API_BASE_URL}/api/report/${reportId}/deletePost`;
+    const url = `${
+      import.meta.env.VITE_DOMAIN
+    }/api/report/${reportId}/deletePost`;
     const token = Cookies.get("token");
 
     if (!token) {

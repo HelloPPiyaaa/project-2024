@@ -13,7 +13,6 @@ import { EditorContext } from "../Screens/editor-page";
 import axios from "axios";
 
 const BlogEditor = () => {
-  const API_URL = "http://localhost:3001";
   const editorContext = useContext(EditorContext);
   let { blog_id } = useParams();
 
@@ -174,7 +173,7 @@ const BlogEditor = () => {
 
         axios
           .post(
-            API_URL + "/create-blog",
+            `${import.meta.env.VITE_DOMAIN}/create-blog`,
             { ...blogObj, id: blog_id },
             {
               headers: {

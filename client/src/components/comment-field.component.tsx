@@ -3,7 +3,6 @@ import { UserContext } from "../App";
 import toast, { Toaster } from "react-hot-toast";
 import { BlogContext } from "../Screens/blog.page";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 
 interface CommentFieldProps {
   action: string;
@@ -56,7 +55,7 @@ const CommentField = ({
 
     axios
       .post(
-        API_BASE_URL + "/create-blog/add-comment",
+        `${import.meta.env.VITE_DOMAIN}/create-blog/add-comment`,
         { _id, blog_author, comment, replying_to: replyingTo },
         {
           headers: {

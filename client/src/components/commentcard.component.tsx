@@ -6,7 +6,6 @@ import CommentField from "./comment-field.component";
 import { FaRegCommentDots } from "react-icons/fa";
 import { BlogContext } from "../Screens/blog.page";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import "../misc/blogpage.css";
 
@@ -147,7 +146,7 @@ const CommentCard = ({ index, leftVal, commentData }: CommentCardProps) => {
       hideReplies();
 
       axios
-        .post(API_BASE_URL + "/create-blog/get-replies", {
+        .post(`${import.meta.env.VITE_DOMAIN}/create-blog/get-replies`, {
           _id: commentArr[currentIndex]._id,
           skip,
         })
@@ -233,7 +232,7 @@ const CommentCard = ({ index, leftVal, commentData }: CommentCardProps) => {
 
     try {
       await axios.post(
-        API_BASE_URL + "/create-blog/delete-comment",
+        `${import.meta.env.VITE_DOMAIN}/create-blog/delete-comment`,
         { _id },
         {
           headers: {

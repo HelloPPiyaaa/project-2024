@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../App";
 import axios from "axios";
-import { API_BASE_URL } from "../api/post";
 import { profileData } from "./ProfilePage";
 import AnimationWrapper from "./page-animation";
 import Loader from "../components/loader.component";
@@ -37,7 +36,7 @@ const EditProfile = () => {
   useEffect(() => {
     if (access_token) {
       axios
-        .post(API_BASE_URL + "/users/get-profile", {
+        .post(`${import.meta.env.VITE_DOMAIN}/users/get-profile`, {
           username: userAuth.username,
         })
         .then(({ data }) => {
@@ -75,7 +74,7 @@ const EditProfile = () => {
           if (url) {
             axios
               .post(
-                API_BASE_URL + "/users/update-profile-img",
+                `${import.meta.env.VITE_DOMAIN}/users/update-profile-img`,
                 { url },
                 {
                   headers: {
@@ -152,7 +151,7 @@ const EditProfile = () => {
 
     axios
       .post(
-        API_BASE_URL + "/users/update-profile",
+        `${import.meta.env.VITE_DOMAIN}/users/update-profile`,
         {
           username,
           bio,

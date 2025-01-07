@@ -1,13 +1,11 @@
 import { Post } from "../types/post";
 import { User } from "../types/user";
 
-const API_BASE_URL = "http://localhost:3001";
-
 export const searchPost = async (query: string): Promise<Post[]> => {
   try {
     const encodedQuery = encodeURIComponent(query);
     const response = await fetch(
-      `${API_BASE_URL}/posts/search?query=${encodedQuery}`,
+      `${import.meta.env.VITE_DOMAIN}/posts/search?query=${encodedQuery}`,
       {
         method: "GET",
         headers: {
@@ -46,7 +44,7 @@ export const searchPost = async (query: string): Promise<Post[]> => {
 export const searchUsers = async (query: string): Promise<User[]> => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/users/search?query=${encodeURIComponent(query)}`,
+      `${import.meta.env.VITE_DOMAIN}/users/search?query=${encodeURIComponent(query)}`,
       {
         method: "GET",
         headers: {
