@@ -22,6 +22,9 @@ const InPageNavigation: React.FC<InPageNavigationProps> = ({
   const activeTabRef = useRef<HTMLButtonElement | null>(null);
   const [inPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
 
+  let [isResizeEventAdded, setIsResizeEventAdded] = useState(false);
+  let [width, setWidth] = useState(window.innerWidth);
+
   const changePageState = (btn: HTMLButtonElement, i: number) => {
     const { offsetWidth, offsetLeft } = btn;
 
@@ -34,10 +37,22 @@ const InPageNavigation: React.FC<InPageNavigationProps> = ({
   };
 
   useEffect(() => {
-    if (activeTabRef.current) {
+    if (width > 766 && inPageNavIndex !== defaultActiveIndex) {
       changePageState(activeTabRef.current, defaultActiveIndex);
     }
-  }, [defaultActiveIndex]);
+
+    if (!isResizeEventAdded) {
+      window.addEventListener("resize", () => {
+        if (!isResizeEventAdded) {
+          setIsResizeEventAdded(true);
+        }
+
+        setWidth(window.innerWidth);
+      });
+    }
+  }, [defaultActiveIndex, width]);
+
+  console.log(width);
 
   return (
     <>

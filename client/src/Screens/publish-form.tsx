@@ -99,11 +99,15 @@ const PublishForm = () => {
       draft: false,
     };
     axios
-      .post(API_URL + "/create-blog", {...blogObj, id: blog_id}, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
+      .post(
+        API_URL + "/create-blog",
+        { ...blogObj, id: blog_id },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
       .then(() => {
         target.classList.remove("disable");
 
@@ -111,7 +115,7 @@ const PublishForm = () => {
         toast.success("เผยแพร่แล้ว");
 
         setTimeout(() => {
-          navigate("/");
+          navigate("/dashboard/blogs");
         }, 500);
       })
       .catch(({ response }) => {

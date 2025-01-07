@@ -24,7 +24,7 @@ interface NotificationCardProps {
       _id: string;
       blog_id: string;
       topic: string;
-    };
+    } | null;
     _id?: string;
   };
   index?: number;
@@ -37,7 +37,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
   notificationState,
 }) => {
   let [isReplying, setReplying] = useState(false);
-  let {
+  const {
     seen,
     type,
     reply,
@@ -47,13 +47,14 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
     user,
     user: userData,
     _id: notification_id,
-    blog: { _id = "", blog_id = "", topic = "Untitled" } = {},
+    blog,
   } = data;
+
+  const { _id = "", blog_id = "", topic = "Untitled" } = blog || {};
 
   const fullname = userData?.fullname || "Unknown";
   const username = userData?.username || "unknown";
   const profile_picture = userData?.profile_picture || "";
-
   let {
     userAuth: {
       username: author_username,

@@ -6,7 +6,10 @@ const jwt = require("jsonwebtoken");
 const { id } = require("date-fns/locale");
 
 const formDatatoSend = (user) => {
-  const access_token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+  const access_token = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET
+  );
   return {
     access_token,
     userId: user._id,

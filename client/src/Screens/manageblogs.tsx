@@ -16,6 +16,12 @@ import InpageNavigation from "../components/Inpage-navigation";
 import Loader from "../components/loader.component";
 import NoDataMessage from "../components/nodata.component";
 import AnimationWrapper from "./page-animation";
+import {
+  ManageDraftBlogPost,
+  ManagePublishedBlogCard,
+} from "../components/manage-blogcard.component";
+import LoadMoreDataBtn from "../components/load-more.component";
+import { useSearchParams } from "react-router-dom";
 
 interface GetBlogsParams {
   page: number;
@@ -31,12 +37,15 @@ interface Blog {
 
 interface BlogsResponse {
   result: Blog[];
+  deleteDocCount: number;
 }
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState<BlogsResponse | null>(null);
   const [drafts, setDraft] = useState<BlogsResponse | null>(null);
   const [query, setQuery] = useState("");
+
+  let activeTab = useSearchParams()[0].get("tab");
 
   let {
     userAuth: { access_token },
@@ -114,7 +123,7 @@ const ManageBlogs = () => {
 
   return (
     <>
-      <h1 className="topic-mangeBlog">ตั้งค่าบล็อก</h1>
+      <h1 className="topic-mangeBlog">จัดการบล็อก</h1>
       <Toaster />
 
       <div className="position-relative search-mangepage">
@@ -130,7 +139,7 @@ const ManageBlogs = () => {
         <IoIosSearch className="position-absolute iosearch" />
       </div>
 
-      <InpageNavigation routes={["บล็อกที่เผยแพร่แล้ว", "บล็อกที่จัดเก็บ"]}>
+      <InpageNavigation routes={["บล็อกที่เผยแพร่แล้ว", "บล็อกที่จัดเก็บ"]} defaultActiveIndex={ activeTab !== 'draft' ? 0 : 1}>
         {blogs === null ? (
           <Loader />
         ) : blogs.result.length ? (
@@ -138,13 +147,49 @@ const ManageBlogs = () => {
             {blogs.result.map((blog, i) => {
               return (
                 <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
-                  <h1>นี่คือบล็อกการ์ด</h1>
+                  <ManagePublishedBlogCard
+                    blog={{ ...blog, index: i, setStateFunc: setBlogs }}
+                  />
                 </AnimationWrapper>
               );
             })}
+            <LoadMoreDataBtn
+              state={blogs}
+              fetchDataFun={getBlogs}
+              additionalParam={{
+                drafts: false,
+                deleteDocCount: blogs.deleteDocCount,
+              }}
+            />
           </>
         ) : (
           <NoDataMessage message="ไม่มีบล็อกที่เผยแพร่" />
+        )}
+
+        {drafts === null ? (
+          <Loader />
+        ) : drafts.result.length ? (
+          <>
+            {drafts.result.map((blog, i) => {
+              return (
+                <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
+                  <ManageDraftBlogPost
+                    blog={{ ...blog, index: i, setStateFunc: setDraft }}
+                  />
+                </AnimationWrapper>
+              );
+            })}
+            <LoadMoreDataBtn
+              state={drafts}
+              fetchDataFun={getBlogs}
+              additionalParam={{
+                drafts: true,
+                deleteDocCount: drafts.deleteDocCount,
+              }}
+            />
+          </>
+        ) : (
+          <NoDataMessage message="ไม่มีบล็อกที่ร่างไว้" />
         )}
       </InpageNavigation>
     </>

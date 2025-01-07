@@ -167,7 +167,7 @@ const SideNav = () => {
           </div>
         </div>
 
-        <div className="mt-3 w-100 out-let">
+        <div className="mt-5 w-100 out-let">
           <Outlet />
         </div>
       </section>

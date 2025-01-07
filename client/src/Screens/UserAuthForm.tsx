@@ -1,4 +1,3 @@
-import "../misc/signup.css";
 import InputBox from "../components/input.component";
 import googleIcon from "../pic/google.png";
 import { Link, Navigate } from "react-router-dom";
@@ -8,6 +7,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { storeInSession } from "../common/session";
 import { UserContext } from "../App";
 import { authWithGoogle } from "../common/firebase";
+import "../misc/signup.css";
 
 interface LoginPageProps {
   type: string;

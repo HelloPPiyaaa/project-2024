@@ -31,6 +31,7 @@ const verifyJWT = (req, res, next) => {
 router.post("/", verifyJWT, (req, res) => {
   const { nanoid } = require("nanoid");
   let authorId = req.user;
+
   let { topic, des, banner, tags, content, draft, id } = req.body;
 
   if (!topic || topic.length === 0) {
@@ -501,16 +502,42 @@ router.post("/user-written-blog", verifyJWT, (req, res) => {
 
 router.post("/user-written-blog-count", verifyJWT, (req, res) => {
   let user_id = req.user;
-  let {draft, query} = req.body;
+  let { draft, query } = req.body;
 
-  Blog.countDocuments({author: user_id, draft, topic: new RegExp(query, 'i')})
-  .then(count => {
-    return res.status(200).json({totalDocs: count})
-  })
-  .catch(err =>{
-    console.log(err.message)
-    return res.status(500).json({error: err.message})
-  })
-})
+  Blog.countDocuments({ author: user_id, draft, topic: new RegExp(query, "i") })
+    .then((count) => {
+      return res.status(200).json({ totalDocs: count });
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
+
+router.post("/delete-blog", verifyJWT, (req, res) => {
+  let user_id = req.user;
+  let { blog_id } = req.body;
+
+  Blog.findOneAndDelete({ blog_id })
+    .then((blog) => {
+      Notifications.deleteMany({ blog_id: blog._id }).then((data) =>
+        console.log("ลบการแจ้งเตือนแล้ว")
+      );
+
+      Comment.deleteMany({ blog_id: blog._id }).then((data) =>
+        console.log("ลบความคิดเห็นแล้ว")
+      );
+
+      User.findOneAndUpdate(
+        { _id: user_id },
+        { $pull: { blog: blog._id }, $inc: { total_posts: -1 } }
+      ).then((user) => console.log("ลบบล็อกแล้ว"));
+
+      return res.status(200).json({ status: "เรียบร้อยแล้ว" });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 module.exports = router;

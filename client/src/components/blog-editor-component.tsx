@@ -189,7 +189,7 @@ const BlogEditor = () => {
             toast.success("บันทึกแล้ว");
 
             setTimeout(() => {
-              navigate("/");
+              navigate("/dashboard/blogs?tab=draft");
             }, 500);
           });
       });
