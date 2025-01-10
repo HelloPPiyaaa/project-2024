@@ -74,7 +74,7 @@ const Profile = () => {
   }, [id]);
 
   const handleFollow = useCallback(async () => {
-    const API_BASE_URL = "http://localhost:3001/follow";
+    const API_BASE_URL = `${import.meta.env.VITE_DOMAIN}/follow`;
     try {
       const response = await fetch(API_BASE_URL, {
         method: "POST",
@@ -98,7 +98,7 @@ const Profile = () => {
   }, [id, isFollowing]);
 
   const handleUnfollow = useCallback(async () => {
-    const API_BASE_URL_DELETE = "http://localhost:3001/follow/delete";
+    const API_BASE_URL_DELETE = `${import.meta.env.VITE_DOMAIN}/follow/delete`;
     try {
       const response = await fetch(API_BASE_URL_DELETE, {
         method: "DELETE",

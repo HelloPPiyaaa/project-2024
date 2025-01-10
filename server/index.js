@@ -3,9 +3,7 @@ const express = require("express");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const path = require("path");
 const bodyParser = require("body-parser");
-const multer = require("multer");
 const serviceAccountKey = require("./kku-blogging-firebase-adminsdk-blvad-4d6e110e4e.json");
 const cookieParser = require("cookie-parser");
 const admin = require("firebase-admin");
@@ -54,21 +52,6 @@ admin.initializeApp({
 app.use(cookieParser());
 app.use(express.json());
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    ); // เก็บไฟล์ด้วยชื่อที่ไม่ซ้ำ
-  },
-});
-
-const upload = multer({ storage: storage });
-
 const registerRouter = require("./routes/register");
 const loginRouter = require("./routes/login");
 const profileRouter = require("./routes/profile");
@@ -105,7 +88,6 @@ app.use("/admin", AdminProfile);
 app.use("/admin/register", AdminRegister);
 app.use("/api/questions", questionRouter);
 app.use("/api/report", reportRouter);
-app.use("/uploads", express.static("uploads"));
 app.use("/create-blog", BlogCreated);
 
 const generateUsername = async (email) => {
@@ -188,21 +170,21 @@ app.post("/google-auth", async (req, res) => {
   }
 });
 
-app.post("/get-upload-picture", upload.single("file"), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+// app.post("/get-upload-picture", upload.single("file"), (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ error: "No file uploaded" });
+//     }
 
-    return res.status(200).json({
-      message: "File uploaded successfully",
-      filename: req.file.filename,
-    });
-  } catch (err) {
-    console.log(err.message);
-    return res.status(500).json({ error: err.message });
-  }
-});
+//     return res.status(200).json({
+//       message: "File uploaded successfully",
+//       filename: req.file.filename,
+//     });
+//   } catch (err) {
+//     console.log(err.message);
+//     return res.status(500).json({ error: err.message });
+//   }
+// });
 
 app.post("/search-blogs", (req, res) => {
   const { tag, author, query, page, limit, eliminate_blog } = req.body;

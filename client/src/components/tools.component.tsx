@@ -6,10 +6,10 @@ import Quote from "@editorjs/quote";
 import InlineCode from "@editorjs/inline-code";
 import Marker from "@editorjs/marker";
 import { ToolConstructable, ToolSettings } from "@editorjs/editorjs";
-import { uploadImage } from "../common/b2";
+import { uploadProfileImage } from "../api/b2";
 
 const uploadImageByFile = (e: File) => {
-  return uploadImage(e).then((url) => {
+  return uploadProfileImage(e).then((url) => {
     if (url) {
       return {
         success: 1,

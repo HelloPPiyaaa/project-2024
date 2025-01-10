@@ -14,7 +14,6 @@ const PublishForm = () => {
   const characterLimit = 200;
   const tagLimit = 10;
   const context = useContext(EditorContext);
-  const API_URL = "http://localhost:3001";
   let {
     userAuth: { access_token },
   } = useContext(UserContext);
@@ -100,7 +99,7 @@ const PublishForm = () => {
     };
     axios
       .post(
-        API_URL + "/create-blog",
+        `${import.meta.env.VITE_DOMAIN}/create-blog`,
         { ...blogObj, id: blog_id },
         {
           headers: {

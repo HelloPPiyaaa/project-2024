@@ -15,7 +15,6 @@ interface LoginPageProps {
 
 const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
   const authForm = useRef<HTMLFormElement>(null);
-  const API_URL = "http://localhost:3001";
 
   const {
     userAuth: { access_token },
@@ -27,7 +26,7 @@ const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
     formData: { [key: string]: any }
   ) => {
     console.log("Server Route:", serverRoute);
-    fetch(API_URL + serverRoute, {
+    fetch(`${import.meta.env.VITE_DOMAIN}${serverRoute}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

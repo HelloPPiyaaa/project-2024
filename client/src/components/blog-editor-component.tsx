@@ -2,7 +2,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import logoKKU from "../pic/logo-head.jpg";
 import "../misc/blogEdit.css";
 import defaultBanner from "../pic/blog banner.png";
-import { uploadImage } from "../common/b2";
 import { useContext, useEffect, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
@@ -11,6 +10,7 @@ import { UserContext } from "../App";
 import AnimationWrapper from "../Screens/page-animation";
 import { EditorContext } from "../Screens/editor-page";
 import axios from "axios";
+import { uploadProfileImage } from "../api/b2";
 
 const BlogEditor = () => {
   const editorContext = useContext(EditorContext);
@@ -52,7 +52,7 @@ const BlogEditor = () => {
     const img = e.target.files?.[0];
     const loadingToast = toast.loading("Uploading...");
     if (img) {
-      uploadImage(img) // ถ้ามีไฟล์เรียกใช้ uploadImage
+      uploadProfileImage(img)
         .then((url) => {
           console.log("Uploaded URL:", url);
           if (url) {
@@ -119,32 +119,6 @@ const BlogEditor = () => {
         });
     }
   };
-
-  // const handlePublishEvent = () => {
-  //   if (!banner.length) {
-  //     return toast.error("upload a blog banner to publish it");
-  //   }
-
-  //   if (!topic.length) {
-  //     return toast.error("write blog topic to publish it");
-  //   }
-
-  //   if (textEditor?.isReady) {
-  //     textEditor
-  //       .save()
-  //       .then((data) => {
-  //         if (data.blocks.length) {
-  //           setBlog({ ...blog, content: data });
-  //           setEditorState("เผยแพร่");
-  //         } else {
-  //           return toast.error("เขียนบางอย่างในบล็อกเพื่อเเผยแพร่");
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // };
 
   const handleSaveDraft = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const target = e.target as HTMLButtonElement;

@@ -7,7 +7,7 @@ function ForgotPassword() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        fetch('http://localhost:3001/forgot-password', {
+        fetch(`${import.meta.env.VITE_DOMAIN}/forgot-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

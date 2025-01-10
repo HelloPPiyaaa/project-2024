@@ -13,7 +13,7 @@ const ResetPassword: React.FC = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:3001/reset_password/${id}/${token}`,
+        `${import.meta.env.VITE_DOMAIN}/reset_password/${id}/${token}`,
         {
           method: "POST",
           headers: {

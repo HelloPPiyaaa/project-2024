@@ -10,7 +10,6 @@ import HomePage from "./Screens/home.page";
 import Profile from "./Screens/profile";
 import EditProfile from "./Screens/edit-profile.page";
 import RegisterAdmin from "./Screens/Admin/adminRegister";
-import Writepost from "./Screens/post";
 // import Content from "./Screens/Content";
 import LoginAdmin from "./Screens/Admin/adminLogin";
 import AdminHome from "./Screens/Admin/adminHome";
@@ -23,7 +22,6 @@ import Category from "./Screens/category";
 import Footer from "./Navbar/footer";
 import ForgotPassword from "./Screens/ForgotPassword";
 import ResetPassword from "./Screens/ResetPassword";
-import Post from "./Screens/post";
 import Chat from "./Screens/chat";
 import { ChatContextProvider } from "./Screens/ChatContext";
 import Navbar2 from "./Navbar/Navbar1";
@@ -114,8 +112,6 @@ function App() {
             <Route path="/test" element={<TestPage />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/profile/edit-profile/:id" element={<EditProfile />} />
-            <Route path="/posts" element={<Post />} />
-            <Route path="/writepost" element={<Writepost />} />
             <Route path="/editpost/:id" element={<EditPost />} />
             <Route path="/setting1" element={<Setting />} />
             <Route path="/setting2" element={<Setting2 />} />
